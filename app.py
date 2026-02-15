@@ -5,11 +5,12 @@ import random
 import os
 from datetime import datetime, time, timedelta
 import pytz
+import base64
 
 # ===================== AYARLAR =====================
 TIMEZONE = pytz.timezone("Europe/Istanbul")
 MORNING_TIME = time(8, 0)
-EVENING_TIME = time(00, 16)
+EVENING_TIME = time(0, 16)
 GUNLUK_SORU_SAYISI = 5
 
 QUESTIONS_FILE = "questions.json"
@@ -18,6 +19,14 @@ WEEKLY_FILE = "weekly_scores.json"
 WRONG_FILE = "wrong_questions.json"
 
 st.set_page_config(page_title="Mini TUS", page_icon="👑")
+
+# ===================== BASE64 =====================
+def get_base64(path):
+    with open(path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+budgie_img = get_base64("static/budgie.png")
+budgie_sound = get_base64("static/budgie.mp3")
 
 # ===================== JSON YÜKLE =====================
 def load_json(path, default):
@@ -100,21 +109,19 @@ if mode == "Günlük Test":
             save_json(WEEKLY_FILE, weekly_scores)
             st.session_state.finished = True
 
-        # ===================== >=4 KUTLAMA =====================
         if st.session_state.correct_count >= 4:
 
-            components.html("""
+            components.html(f"""
             <div class="celebration">
                 <div class="title">👑 HARİKASIN 👑</div>
             </div>
 
-            <audio id="budgieSound" src="/static/budgie.mp3"></audio>
-
+            <audio id="budgieSound" src="data:audio/mp3;base64,{budgie_sound}"></audio>
 
             <style>
-            body { margin:0; overflow:hidden; }
+            body {{ margin:0; overflow:hidden; }}
 
-            .celebration {
+            .celebration {{
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -122,9 +129,9 @@ if mode == "Günlük Test":
                 height: 100%;
                 background: radial-gradient(circle, #1e3c72, #2a5298);
                 overflow: hidden;
-            }
+            }}
 
-            .title {
+            .title {{
                 position: absolute;
                 top: 10%;
                 width: 100%;
@@ -133,82 +140,51 @@ if mode == "Günlük Test":
                 color: gold;
                 font-weight: bold;
                 text-shadow: 2px 2px 10px black;
-            }
+            }}
 
-            .bird {
+            .bird {{
                 position: absolute;
                 width: 80px;
-            }
+            }}
 
-            @keyframes flyRight {
-              0% { transform: translateX(-120px) translateY(0px) rotate(-5deg); }
-              25% { transform: translateX(25vw) translateY(-25px) rotate(5deg); }
-              50% { transform: translateX(50vw) translateY(20px) rotate(-4deg); }
-              75% { transform: translateX(75vw) translateY(-15px) rotate(3deg); }
-              100% { transform: translateX(110vw) translateY(0px) rotate(0deg); }
-            }
+            @keyframes flyRight {{
+              0% {{ transform: translateX(-120px) translateY(0px) rotate(-5deg); }}
+              100% {{ transform: translateX(110vw) translateY(0px) rotate(0deg); }}
+            }}
 
-            @keyframes flyLeft {
-              0% { transform: translateX(110vw) translateY(0px) rotate(5deg); }
-              25% { transform: translateX(75vw) translateY(-20px) rotate(-5deg); }
-              50% { transform: translateX(50vw) translateY(25px) rotate(4deg); }
-              75% { transform: translateX(25vw) translateY(-15px) rotate(-3deg); }
-              100% { transform: translateX(-120px) translateY(0px) rotate(0deg); }
-            }
-
-            @keyframes jumpUp {
-              0% { transform: translateY(100vh) rotate(-10deg); }
-              50% { transform: translateY(40vh) rotate(10deg); }
-              100% { transform: translateY(-120px) rotate(-5deg); }
-            }
+            @keyframes flyLeft {{
+              0% {{ transform: translateX(110vw) translateY(0px) rotate(5deg); }}
+              100% {{ transform: translateX(-120px) translateY(0px) rotate(0deg); }}
+            }}
             </style>
 
             <script>
             const celebration = document.querySelector('.celebration');
             const colors = [0, 60, 200];
 
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < 12; i++) {{
 
                 let bird = document.createElement('img');
-                bird.src = '/static/budgie.png';
-
+                bird.src = "data:image/png;base64,{budgie_img}";
                 bird.className = 'bird';
 
                 let hue = colors[Math.floor(Math.random() * colors.length)];
                 bird.style.filter = `hue-rotate(${hue}deg) saturate(1.3)`;
 
-                let randomType = Math.random();
                 let duration = 3 + Math.random() * 3;
+                bird.style.top = Math.random() * 90 + 'vh';
 
-                if (randomType < 0.4) {
-                    bird.style.top = Math.random() * 90 + 'vh';
+                if (Math.random() < 0.5) {{
                     bird.style.animation = `flyRight ${duration}s linear infinite`;
-                }
-                else if (randomType < 0.8) {
-                    bird.style.top = Math.random() * 90 + 'vh';
+                }} else {{
                     bird.style.animation = `flyLeft ${duration}s linear infinite`;
-                }
-                else {
-                    bird.style.left = Math.random() * 90 + 'vw';
-                    bird.style.animation = `jumpUp ${duration}s linear infinite`;
-                }
+                }}
 
                 celebration.appendChild(bird);
-            }
+            }}
 
             const sound = document.getElementById("budgieSound");
-            let count = 0;
-
-            function playSound() {
-                if (count < 3) {
-                    sound.currentTime = 0;
-                    sound.play().catch(()=>{});
-                    count++;
-                }
-            }
-
-            sound.onended = playSound;
-            playSound();
+            sound.play().catch(()=>{{}});
             </script>
             """, height=600)
 
@@ -236,56 +212,3 @@ if mode == "Günlük Test":
             if not any(w["id"] == q["id"] for w in wrong_questions):
                 wrong_questions.append({"id": q["id"], "date": today})
                 save_json(WRONG_FILE, wrong_questions)
-
-# =========================================================
-# ===================== YANLIŞLARIM =======================
-# =========================================================
-if mode == "Yanlışlarım":
-
-    st.header("❌ Yanlışlarım")
-
-    eligible_ids = []
-    for w in wrong_questions:
-        wrong_date = datetime.strptime(w["date"], "%Y-%m-%d").date()
-        if (now_dt.date() - wrong_date).days >= 2:
-            eligible_ids.append(w["id"])
-
-    eligible_questions = [q for q in questions if q["id"] in eligible_ids]
-
-    if not eligible_questions:
-        st.info("2 gün dolmuş yanlış yok 💖")
-        st.stop()
-
-    if "wrong_mode" not in st.session_state:
-        st.session_state.wrong_mode = random.sample(
-            eligible_questions,
-            min(5, len(eligible_questions))
-        )
-        st.session_state.wrong_index = 0
-
-    wrong_list = st.session_state.wrong_mode
-    wrong_index = st.session_state.wrong_index
-
-    if wrong_index >= len(wrong_list):
-        st.success("🎉 Yanlış tekrar tamamlandı!")
-        del st.session_state.wrong_mode
-        del st.session_state.wrong_index
-        st.stop()
-
-    q = wrong_list[wrong_index]
-
-    st.subheader(f"Yanlış Soru {wrong_index + 1}")
-    st.write(q["soru"])
-
-    choice = st.radio("Seç:", q["secenekler"], key=f"wrong_{wrong_index}")
-
-    if st.button("Onayla"):
-        if choice == q["dogru"]:
-            st.success("Doğru 👑 Soru silindi.")
-            wrong_questions = [w for w in wrong_questions if w["id"] != q["id"]]
-            save_json(WRONG_FILE, wrong_questions)
-        else:
-            st.warning("Çok Çalışmalısınız Ülküm hanımmmm 😏")
-
-        st.session_state.wrong_index += 1
-        st.rerun()
