@@ -227,7 +227,7 @@ for (let i = 0; i < 40; i++) {{
   const confetti = document.createElement("div");
   confetti.className = "confetti";
   confetti.style.left = Math.random()*100 + "vw";
-  confetti.style.background = `hsl(${Math.random()*360}, 100%, 60%)`;
+  confetti.style.background = "hsl(" + (Math.random()*360) + ", 100%, 60%)";
   confetti.style.animationDuration = (3+Math.random()*3)+"s";
   root.appendChild(confetti);
 }}
@@ -237,7 +237,7 @@ for (let i = 0; i < 12; i++) {{
   const balloon = document.createElement("div");
   balloon.className = "balloon";
   balloon.style.left = Math.random()*100 + "vw";
-  balloon.style.background = `hsl(${Math.random()*360}, 70%, 60%)`;
+  balloon.style.background = "hsl(" + (Math.random()*360) + ", 70%, 60%)";
   balloon.style.animationDuration = (6+Math.random()*4)+"s";
   root.appendChild(balloon);
 }}
