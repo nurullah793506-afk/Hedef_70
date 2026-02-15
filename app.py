@@ -120,9 +120,12 @@ if mode == "Günlük Test":
 
             <style>
             body {{ margin:0; overflow:hidden; }}
+            html, body {
+            height: 100%;
+            }
 
             .celebration {{
-                position: fixed;
+                position: absolute;
                 top: 0;
                 left: 0;
                 width: 100%;
@@ -194,7 +197,7 @@ if mode == "Günlük Test":
             const sound = document.getElementById("budgieSound");
             sound.play().catch(()=>{{}});
             </script>
-            """, height=600)
+            """, height=900)
 
         else:
             st.success("🎉 Oturum tamamlandı!")
