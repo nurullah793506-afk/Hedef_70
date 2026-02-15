@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import json
 import random
 import os
@@ -102,16 +103,16 @@ if mode == "Günlük Test":
         # ===================== >=4 KUTLAMA =====================
         if st.session_state.correct_count >= 4:
 
-            st.markdown("""
+            components.html("""
             <div class="celebration">
                 <div class="title">👑 HARİKASIN 👑</div>
             </div>
 
-            <audio id="budgieSound">
-                <source src="budgie.mp3" type="audio/mpeg">
-            </audio>
+            <audio id="budgieSound" src="budgie.mp3"></audio>
 
             <style>
+            body { margin:0; overflow:hidden; }
+
             .celebration {
                 position: fixed;
                 top: 0;
@@ -119,9 +120,7 @@ if mode == "Günlük Test":
                 width: 100%;
                 height: 100%;
                 background: radial-gradient(circle, #1e3c72, #2a5298);
-                z-index: 9999;
                 overflow: hidden;
-                animation: fadeOut 5s forwards;
             }
 
             .title {
@@ -146,32 +145,25 @@ if mode == "Günlük Test":
               50% { transform: translateX(50vw) translateY(20px) rotate(-4deg); }
               75% { transform: translateX(75vw) translateY(-15px) rotate(3deg); }
               100% { transform: translateX(110vw) translateY(0px) rotate(0deg); }
-          }
+            }
 
             @keyframes flyLeft {
-                0% { transform: translateX(110vw) translateY(0px) rotate(5deg); }
-                25% { transform: translateX(75vw) translateY(-20px) rotate(-5deg); }
-                50% { transform: translateX(50vw) translateY(25px) rotate(4deg); }
-                75% { transform: translateX(25vw) translateY(-15px) rotate(-3deg); }
-                100% { transform: translateX(-120px) translateY(0px) rotate(0deg); }
-            }
-            
-            @keyframes jumpUp {
-                0% { transform: translateY(100vh) rotate(-10deg); }
-                50% { transform: translateY(40vh) rotate(10deg); }
-                100% { transform: translateY(-120px) rotate(-5deg); }
+              0% { transform: translateX(110vw) translateY(0px) rotate(5deg); }
+              25% { transform: translateX(75vw) translateY(-20px) rotate(-5deg); }
+              50% { transform: translateX(50vw) translateY(25px) rotate(4deg); }
+              75% { transform: translateX(25vw) translateY(-15px) rotate(-3deg); }
+              100% { transform: translateX(-120px) translateY(0px) rotate(0deg); }
             }
 
-            @keyframes fadeOut {
-                0% {opacity: 1;}
-                90% {opacity: 1;}
-                100% {opacity: 0; visibility: hidden;}
+            @keyframes jumpUp {
+              0% { transform: translateY(100vh) rotate(-10deg); }
+              50% { transform: translateY(40vh) rotate(10deg); }
+              100% { transform: translateY(-120px) rotate(-5deg); }
             }
             </style>
 
             <script>
             const celebration = document.querySelector('.celebration');
-
             const colors = [0, 60, 200];
 
             for (let i = 0; i < 12; i++) {
@@ -208,16 +200,15 @@ if mode == "Günlük Test":
             function playSound() {
                 if (count < 3) {
                     sound.currentTime = 0;
-                    sound.play();
+                    sound.play().catch(()=>{});
                     count++;
                 }
             }
 
-            sound.addEventListener("ended", playSound);
+            sound.onended = playSound;
             playSound();
-
             </script>
-            """, unsafe_allow_html=True)
+            """, height=600)
 
         else:
             st.success("🎉 Oturum tamamlandı!")
@@ -235,11 +226,9 @@ if mode == "Günlük Test":
         if choice == q["dogru"]:
             asked_questions.append(q["id"])
             save_json(ASKED_FILE, asked_questions)
-
             st.session_state.correct_count += 1
             st.session_state.q_index += 1
             st.rerun()
-
         else:
             st.warning("Olmadı Aşkım bir daha deneyelim 💖")
             if not any(w["id"] == q["id"] for w in wrong_questions):
@@ -294,7 +283,7 @@ if mode == "Yanlışlarım":
             wrong_questions = [w for w in wrong_questions if w["id"] != q["id"]]
             save_json(WRONG_FILE, wrong_questions)
         else:
-            st.warning("Tekrar çalış 😏")
+            st.warning("Çok Çalışmalısınız Ülküm hanımmmm 😏")
 
         st.session_state.wrong_index += 1
         st.rerun()
