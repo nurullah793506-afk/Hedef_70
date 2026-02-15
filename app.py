@@ -134,7 +134,7 @@ if mode == "Günlük Test":
         if st.session_state.correct_count >= 4:
 
             # ===================== KUTLAMA EKRANI (PEMBE, KONFETİ, KALP, UÇAN KUŞLAR) =====================
-components.html(f"""
+                components.html(f"""
 <!DOCTYPE html>
 <html lang="tr">
 <head>
