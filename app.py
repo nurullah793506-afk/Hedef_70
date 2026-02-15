@@ -241,7 +241,7 @@ if mode == "Günlük Test":
             st.rerun()
 
         else:
-            st.warning("Yanlış 😏")
+            st.warning("Olmadı Aşkım bir daha deneyelim 💖")
             if not any(w["id"] == q["id"] for w in wrong_questions):
                 wrong_questions.append({"id": q["id"], "date": today})
                 save_json(WRONG_FILE, wrong_questions)
