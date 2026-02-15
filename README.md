@@ -1,1 +1,1 @@
-# TUS Hazirrigi
+# TUS Hazirligi
