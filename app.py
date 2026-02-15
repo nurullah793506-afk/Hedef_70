@@ -170,6 +170,11 @@ if mode == "Günlük Test":
                 let bird = document.createElement('img');
                 bird.src = "data:image/png;base64,{budgie_img}";
                 bird.className = 'bird';
+                
+                bird.style.width = "120px";
+                bird.style.left = Math.random() * 90 + "vw";
+                bird.style.top = Math.random() * 90 + "vh";
+                bird.style.zIndex = "9999";
 
                 let hue = colors[Math.floor(Math.random() * colors.length)];
                 bird.style.filter = "hue-rotate(" + hue + "deg) saturate(1.3)";
