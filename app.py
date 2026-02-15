@@ -8,17 +8,19 @@ import pytz
 import base64
 from PIL import Image
 from io import BytesIO
+from pathlib import Path
 
 # ===================== AYARLAR =====================
 TIMEZONE = pytz.timezone("Europe/Istanbul")
 MORNING_TIME = time(8, 0)
-EVENING_TIME = time(20, 0)  # Akşam testi için 20:00
+EVENING_TIME = time(20, 0)
 GUNLUK_SORU_SAYISI = 5
 
-QUESTIONS_FILE = "questions.json"
-ASKED_FILE = "asked_questions.json"
-WEEKLY_FILE = "weekly_scores.json"
-WRONG_FILE = "wrong_questions.json"
+BASE_DIR = Path(__file__).parent
+QUESTIONS_FILE = BASE_DIR / "questions.json"
+ASKED_FILE = BASE_DIR / "asked_questions.json"
+WEEKLY_FILE = BASE_DIR / "weekly_scores.json"
+WRONG_FILE = BASE_DIR / "wrong_questions.json"
 
 st.set_page_config(page_title="Mini TUS", page_icon="👑")
 
@@ -29,13 +31,24 @@ def get_base64(path):
 
 def get_base64_resized(path):
     img = Image.open(path)
+    img = img.convert("RGBA")  # format uyumsuzsa sorun çıkmasın
     img = img.resize((300, int(img.height * 300 / img.width)))
     buffer = BytesIO()
     img.save(buffer, format="PNG")
     return base64.b64encode(buffer.getvalue()).decode()
 
-budgie_img = get_base64_resized("static/budgie.png")
-budgie_sound = get_base64("static/budgie.mp3")
+# Görselleri yükle
+try:
+    budgie_img = get_base64_resized(BASE_DIR / "static" / "budgie.png")
+except Exception as e:
+    st.error(f"Görsel yüklenemedi: {e}")
+    budgie_img = ""
+
+try:
+    budgie_sound = get_base64(BASE_DIR / "static" / "budgie.mp3")
+except Exception as e:
+    st.error(f"Ses dosyası yüklenemedi: {e}")
+    budgie_sound = ""
 
 # ===================== JSON YÜKLE =====================
 def load_json(path, default):
