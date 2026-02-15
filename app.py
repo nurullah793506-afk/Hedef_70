@@ -7,11 +7,12 @@ from datetime import datetime, time, timedelta
 import pytz
 import base64
 from PIL import Image
+from io import BytesIO
 
 # ===================== AYARLAR =====================
 TIMEZONE = pytz.timezone("Europe/Istanbul")
 MORNING_TIME = time(8, 0)
-EVENING_TIME = time(0, 16)
+EVENING_TIME = time(20, 0)  # Akşam testi için 20:00
 GUNLUK_SORU_SAYISI = 5
 
 QUESTIONS_FILE = "questions.json"
@@ -22,16 +23,19 @@ WRONG_FILE = "wrong_questions.json"
 st.set_page_config(page_title="Mini TUS", page_icon="👑")
 
 # ===================== BASE64 =====================
+def get_base64(path):
+    with open(path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
 def get_base64_resized(path):
     img = Image.open(path)
     img = img.resize((300, int(img.height * 300 / img.width)))
-    img.save("temp.png")
-    with open("temp.png", "rb") as f:
-        return base64.b64encode(f.read()).decode()
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    return base64.b64encode(buffer.getvalue()).decode()
 
 budgie_img = get_base64_resized("static/budgie.png")
 budgie_sound = get_base64("static/budgie.mp3")
-
 
 # ===================== JSON YÜKLE =====================
 def load_json(path, default):
@@ -58,12 +62,12 @@ now_time = now_dt.time()
 # ===================== OTURUM BELİRLE =====================
 if MORNING_TIME <= now_time < EVENING_TIME:
     session_type = "morning"
-    st.title("🌅 Günaydın 💖 Sabah Testi")
+    st.title("🌅 Günaydın - Sabah Testi")
 elif now_time >= EVENING_TIME:
     session_type = "evening"
-    st.title("🌙 İyi akşamlar 💜 Akşam Testi")
+    st.title("🌙 İyi akşamlar - Akşam Testi")
 else:
-    st.info("Test saati henüz gelmedi 💖 (08:00 veya 20:00)")
+    st.info("Test saati henüz gelmedi (08:00 veya 20:00)")
     st.stop()
 
 session_key = f"{today}_{session_type}"
@@ -118,7 +122,7 @@ if mode == "Günlük Test":
 
             components.html(f"""
             <div class="celebration">
-                <div class="title">👑 HARİKASIN 👑</div>
+                <div class="title">👑 Harikasın 👑</div>
             </div>
 
             <audio id="budgieSound" src="data:audio/mp3;base64,{budgie_sound}"></audio>
@@ -149,7 +153,6 @@ if mode == "Günlük Test":
                 font-weight: bold;
                 text-shadow: 2px 2px 10px black;
             }}
-
 
             .bird {{
                 position: absolute;
@@ -224,7 +227,7 @@ if mode == "Günlük Test":
             st.session_state.q_index += 1
             st.rerun()
         else:
-            st.warning("Olmadı Aşkım bir daha deneyelim 💖")
+            st.warning("Yanlış oldu, tekrar deneyelim.")
             if not any(w["id"] == q["id"] for w in wrong_questions):
                 wrong_questions.append({"id": q["id"], "date": today})
                 save_json(WRONG_FILE, wrong_questions)
