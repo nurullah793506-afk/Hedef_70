@@ -1,1 +1,1 @@
-# TUS-Haz-rl-
+# TUS Hazirrigi
