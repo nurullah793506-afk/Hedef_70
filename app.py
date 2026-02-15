@@ -169,7 +169,7 @@ if mode == "Günlük Test":
                 bird.className = 'bird';
 
                 let hue = colors[Math.floor(Math.random() * colors.length)];
-                bird.style.filter = `hue-rotate(${hue}deg) saturate(1.3)`;
+                bird.style.filter = `hue-rotate(${{hue}}deg) saturate(1.3)`;
 
                 let duration = 3 + Math.random() * 3;
                 bird.style.top = Math.random() * 90 + 'vh';
