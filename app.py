@@ -13,7 +13,7 @@ from pathlib import Path
 # ===================== AYARLAR =====================
 TIMEZONE = pytz.timezone("Europe/Istanbul")
 MORNING_TIME = time(8, 0)
-EVENING_TIME = time(1, 39)
+EVENING_TIME = time(2, 13)
 GUNLUK_SORU_SAYISI = 5
 
 BASE_DIR = Path(__file__).parent
@@ -37,7 +37,7 @@ def get_base64_resized(path):
     img.save(buffer, format="PNG")
     return base64.b64encode(buffer.getvalue()).decode()
 
-# Görselleri yükle
+# Görselleri/SES'i yükle
 try:
     budgie_img = get_base64_resized(BASE_DIR / "static" / "budgie.png")
 except Exception as e:
@@ -133,92 +133,226 @@ if mode == "Günlük Test":
 
         if st.session_state.correct_count >= 4:
 
+            # ===================== KUTLAMA EKRANI (PEMBE, KONFETİ, KALP, UÇAN KUŞLAR) =====================
             components.html(f"""
-            <div class="celebration">
-                <div class="title">👑 Harikasın 👑</div>
-            </div>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+  :root {{
+    --pink-1: #ff9acb;
+    --pink-2: #ff6fb1;
+    --pink-3: #ffa3d1;
+    --heart:  #ff4d88;
+    --gold:   #ffd54f;
+  }}
 
-            <audio id="budgieSound" src="data:audio/mp3;base64,{budgie_sound}"></audio>
+  html, body {{
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }}
 
-            <style>
-            body {{ margin:0; overflow:hidden; }}
-            html, body {{
-            height: 100%;
-            }}
+  .celebration {{
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 30% 20%, var(--pink-3), var(--pink-2) 45%, var(--pink-1) 100%);
+    /* hafif desen */
+    background-blend-mode: screen;
+  }}
 
-            .celebration {{
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: radial-gradient(circle, #1e3c72, #2a5298);
-                overflow: hidden;
-            }}
+  .title {{
+    position: absolute;
+    top: 6%;
+    width: 100%;
+    text-align: center;
+    font-size: 56px;
+    color: white;
+    font-weight: 800;
+    text-shadow: 0 2px 0 #c33f70, 0 4px 12px rgba(0,0,0,.3);
+    letter-spacing: .5px;
+  }}
 
-            .title {{
-                position: absolute;
-                top: 10%;
-                width: 100%;
-                text-align: center;
-                font-size: 60px;
-                color: gold;
-                font-weight: bold;
-                text-shadow: 2px 2px 10px black;
-            }}
+  /* Kuş */
+  .bird {{
+    position: absolute;
+    width: 120px;
+    height: auto;
+    z-index: 4;
+    will-change: transform;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,.25));
+  }}
 
-            .bird {{
-                position: absolute;
-                width: 120px;
-                height: auto;
-                z-index: 9999;
-            }}
+  /* Sağa uçuş: dalgalı rota — genlik değişken */
+  @keyframes flyRight {{
+    0%   {{ transform: translateX(-15vw) translateY(calc(var(--startY))); }}
+    20%  {{ transform: translateX(10vw)  translateY(calc(var(--startY) + 0.6*var(--amp))); }}
+    40%  {{ transform: translateX(35vw)  translateY(calc(var(--startY) - 0.6*var(--amp))); }}
+    60%  {{ transform: translateX(60vw)  translateY(calc(var(--startY) + 0.6*var(--amp))); }}
+    80%  {{ transform: translateX(85vw)  translateY(calc(var(--startY) - 0.6*var(--amp))); }}
+    100% {{ transform: translateX(115vw) translateY(calc(var(--startY))); }}
+  }}
 
-            @keyframes flyRight {{
-              0% {{ transform: translateX(-120px) translateY(0px) rotate(-5deg); }}
-              100% {{ transform: translateX(110vw) translateY(0px) rotate(0deg); }}
-            }}
+  /* Sola uçuş: görüntüyü scaleX(-1) ile çeviriyoruz ki kuş yönüne baksın */
+  @keyframes flyLeft {{
+    0%   {{ transform: translateX(115vw) translateY(calc(var(--startY))) scaleX(-1); }}
+    20%  {{ transform: translateX(90vw)  translateY(calc(var(--startY) + 0.6*var(--amp))) scaleX(-1); }}
+    40%  {{ transform: translateX(65vw)  translateY(calc(var(--startY) - 0.6*var(--amp))) scaleX(-1); }}
+    60%  {{ transform: translateX(40vw)  translateY(calc(var(--startY) + 0.6*var(--amp))) scaleX(-1); }}
+    80%  {{ transform: translateX(15vw)  translateY(calc(var(--startY) - 0.6*var(--amp))) scaleX(-1); }}
+    100% {{ transform: translateX(-15vw) translateY(calc(var(--startY))) scaleX(-1); }}
+  }}
 
-            @keyframes flyLeft {{
-              0% {{ transform: translateX(110vw) translateY(0px) rotate(5deg); }}
-              100% {{ transform: translateX(-120px) translateY(0px) rotate(0deg); }}
-            }}
-            </style>
+  /* Düşen parçacıklar: konfeti */
+  .confetti {{
+    position: absolute;
+    top: -5vh;
+    width: 8px;
+    height: 14px;
+    background: #fff;
+    opacity: .95;
+    z-index: 2;
+    will-change: transform, opacity;
+    border-radius: 2px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  }}
 
-            <script>
-            const celebration = document.querySelector('.celebration');
-            const colors = [0, 60, 200];
+  @keyframes fall {{
+    0%   {{ transform: translateY(-10vh) rotate(0deg);   opacity: 1;   }}
+    70%  {{ opacity: .95; }}
+    100% {{ transform: translateY(110vh) rotate(360deg); opacity: 0.9; }}
+  }}
 
-            for (let i = 0; i < 12; i++) {{
+  /* Kalp şekli */
+  .heart {{
+    position: absolute;
+    top: -6vh;
+    width: 14px;
+    height: 14px;
+    transform: rotate(-45deg);
+    z-index: 1;
+    animation: fall linear forwards;
+  }}
+  .heart:before,
+  .heart:after {{
+    content: "";
+    position: absolute;
+    width: 14px; height: 14px;
+    background: var(--heart);
+    border-radius: 50%;
+  }}
+  .heart:before {{ left: 7px; }}
+  .heart:after  {{ top: -7px; }}
 
-                let bird = document.createElement('img');
-                bird.src = "data:image/png;base64,{budgie_img}";
-                bird.className = 'bird';
-                
-                bird.style.width = "120px";
-                bird.style.left = Math.random() * 90 + "vw";
-                bird.style.top = Math.random() * 90 + "vh";
-                bird.style.zIndex = "9999";
+  /* Alt tarafta hafif pembe konfeti zemini (statik) */
+  .static-sprinkles {{
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      radial-gradient(circle 3px at 10% 20%, #ffe0ef 95%, transparent 96%),
+      radial-gradient(circle 2.5px at 20% 80%, #ffd2ea 95%, transparent 96%),
+      radial-gradient(circle 3px at 80% 30%, #ffe0ef 95%, transparent 96%),
+      radial-gradient(circle 2.5px at 60% 60%, #ffd2ea 95%, transparent 96%),
+      radial-gradient(circle 3px at 30% 50%, #ffe0ef 95%, transparent 96%),
+      radial-gradient(circle 2.5px at 70% 75%, #ffd2ea 95%, transparent 96%);
+    opacity: .45;
+    pointer-events: none;
+  }}
+</style>
+</head>
+<body>
+  <div class="celebration" id="celebration">
+      <div class="static-sprinkles"></div>
+      <div class="title">👑 Harikasın 👑</div>
+      <audio id="budgieSound" src="data:audio/mp3;base64,{budgie_sound}"></audio>
+  </div>
 
-                let hue = colors[Math.floor(Math.random() * colors.length)];
-                bird.style.filter = "hue-rotate(" + hue + "deg) saturate(1.3)";
+<script>
+(function() {{
+  const root = document.getElementById('celebration');
 
-                let duration = 3 + Math.random() * 3;
-                bird.style.top = Math.random() * 90 + 'vh';
+  // ====== Ses
+  const sound = document.getElementById("budgieSound");
+  sound.play().catch(()=>{{}});
 
-                if (Math.random() < 0.5) {{
-                    bird.style.animation = "flyRight " + duration + "s linear infinite";
-                }} else {{
-                    bird.style.animation = "flyLeft " + duration + "s linear infinite";
-                }}
+  // ====== Renk setleri (tam kuşa uygulanır)
+  const hueSet = [0, 35, 90, 180, 220, 290];
 
-                celebration.appendChild(bird);
-            }}
+  // ====== Uçan kuşlar
+  const BIRD_COUNT = 12;
+  for (let i = 0; i < BIRD_COUNT; i++) {{
+    const bird = document.createElement('img');
+    bird.src = "data:image/png;base64,{budgie_img}";
+    bird.className = 'bird';
 
-            const sound = document.getElementById("budgieSound");
-            sound.play().catch(()=>{{}});
-            </script>
+    // Başlangıç yüksekliği ve dalga genliği
+    const startY = Math.floor(Math.random() * 80);   // 0..80 vh
+    const amp    = Math.floor(6 + Math.random() * 12); // 6..18 vh
+    bird.style.setProperty('--startY', startY + 'vh');
+    bird.style.setProperty('--amp', amp + 'vh');
+
+    // Boyut ufak varyasyonlar
+    const size = 100 + Math.random() * 40; // px
+    bird.style.width = size + 'px';
+
+    // Renk – tüm görsele filtre uygula
+    const hue = hueSet[Math.floor(Math.random() * hueSet.length)];
+    bird.style.filter = `hue-rotate(${hue}deg) saturate(1.25) drop-shadow(0 6px 10px rgba(0,0,0,.25))`;
+
+    // Hız
+    const duration = (3 + Math.random() * 3).toFixed(2); // 3..6 s
+
+    // Yön
+    if (Math.random() < 0.5) {{
+      bird.style.animation = `flyRight ${duration}s linear infinite`;
+    }} else {{
+      bird.style.animation = `flyLeft ${duration}s linear infinite`;
+    }}
+
+    // Rastgele bir gecikme
+    bird.style.animationDelay = `${Math.random()*2}s`;
+    root.appendChild(bird);
+  }}
+
+  // ====== Konfeti + Kalpler
+  const CONFETTI_COUNT = 140;
+  const HEART_COUNT    = 40;
+
+  function rand(min, max) {{ return Math.random() * (max - min) + min; }}
+
+  const confettiColors = ['#ffffff', '#ffd54f', '#ff7abf', '#8be9ff', '#bfff7a', '#ffc1e3'];
+
+  for (let i = 0; i < CONFETTI_COUNT; i++) {{
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = rand(0, 100) + 'vw';
+    c.style.background = confettiColors[Math.floor(Math.random()*confettiColors.length)];
+    c.style.transform = `rotate(${rand(0, 360)}deg)`;
+    c.style.animation = `fall ${rand(3, 7).toFixed(2)}s linear ${rand(0, 3).toFixed(2)}s infinite`;
+    c.style.width  = rand(6, 10) + 'px';
+    c.style.height = rand(10, 18) + 'px';
+    root.appendChild(c);
+  }}
+
+  for (let i = 0; i < HEART_COUNT; i++) {{
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.style.left = rand(0, 100) + 'vw';
+    h.style.animationDuration = rand(4, 8).toFixed(2) + 's';
+    h.style.animationDelay    = rand(0, 4).toFixed(2) + 's';
+    h.style.opacity = (0.7 + Math.random()*0.3).toFixed(2);
+    root.appendChild(h);
+  }}
+
+}})();
+</script>
+</body>
+</html>
             """, height=900)
+            # ===================== KUTLAMA EKRANI SONU =====================
 
         else:
             st.success("🎉 Oturum tamamlandı!")
