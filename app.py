@@ -254,10 +254,11 @@ for (let i = 0; i < 12; i++) {{
   bird.style.top = Math.random()*80 + "vh";
   bird.style.animation = (Math.random()<0.5 ? 
       "flyRight " : "flyLeft ") + (3+Math.random()*3)+"s linear infinite";
-  bird.style.filter =
+   bird.style.filter =
       "brightness(0) saturate(100%) " +
-      "sepia(1) saturate(5000%) " +
-      "hue-rotate(" + (Math.random()*360) + "deg)";
+      "sepia(1) saturate(3000%) " +
+      "hue-rotate(" + (Math.random()*360) + "deg) " +
+      "brightness(1.2)";
   root.appendChild(bird);
 }}
 
