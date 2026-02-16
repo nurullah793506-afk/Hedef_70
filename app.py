@@ -239,3 +239,26 @@ if mode == "Günlük Test":
 
     st.subheader(f"Soru {q_index + 1}")
     st.write(q["soru"])
+    options = q["secenekler"]
+
+selected = st.radio("Cevabınız:", options, key=f"radio_{q_index}")
+
+if st.button("Cevapla", key=f"btn_{q_index}"):
+
+    if selected == q["dogru"]:
+        st.success("Doğru 👑")
+        st.session_state.correct_count += 1
+        asked_questions.append(q["id"])
+        save_json(ASKED_FILE, asked_questions)
+        st.session_state.q_index += 1
+        st.rerun()
+    else:
+        st.error(f"Yanlış ❌ Doğru cevap: {q['dogru']}")
+        wrong_questions.append({
+            "id": q["id"],
+            "wrong_date": today
+        })
+        save_json(WRONG_FILE, wrong_questions)
+        st.session_state.q_index += 1
+        st.rerun()
+
