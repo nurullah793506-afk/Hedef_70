@@ -171,83 +171,51 @@ if mode == "Günlük Test":
         components.html(f"""
         <style>
         
-        @keyframes fallDown {{
+        body {{
+          overflow: hidden;
+        }}
+        
+        @keyframes fall {{
           0% {{ transform: translateY(-10vh); opacity:1; }}
           100% {{ transform: translateY(110vh); opacity:0; }}
         }}
         
-        @keyframes floatUp {{
-          0% {{ transform: translateY(0vh); opacity:1; }}
-          100% {{ transform: translateY(-120vh); opacity:0; }}
+        @keyframes rise {{
+          0% {{ transform: translateY(100vh); opacity:1; }}
+          100% {{ transform: translateY(-20vh); opacity:0; }}
         }}
         
-        @keyframes flyAcross {{
-          0% {{ transform: translateX(-15vw); }}
-          100% {{ transform: translateX(115vw); }}
+        @keyframes fly {{
+          0% {{ transform: translateX(-10vw); }}
+          100% {{ transform: translateX(110vw); }}
         }}
         
-        .party {{
+        .item {{
           position: fixed;
           font-size: 28px;
+          z-index: 9999;
           pointer-events:none;
-          z-index:9999;
         }}
         
         </style>
         
-        <script>
+        <!-- KALPLER -->
+        <div class="item" style="left:10vw; animation:fall 6s linear infinite;">💖</div>
+        <div class="item" style="left:25vw; animation:fall 5s linear infinite;">💖</div>
+        <div class="item" style="left:40vw; animation:fall 7s linear infinite;">💖</div>
+        <div class="item" style="left:60vw; animation:fall 6.5s linear infinite;">💖</div>
+        <div class="item" style="left:80vw; animation:fall 5.5s linear infinite;">💖</div>
         
-        function randomBetween(min,max){{
-          return Math.random()*(max-min)+min;
-        }}
+        <!-- KONFETİ -->
+        <div class="item" style="left:15vw; animation:rise 4s linear infinite;">🎊</div>
+        <div class="item" style="left:35vw; animation:rise 5s linear infinite;">🎊</div>
+        <div class="item" style="left:55vw; animation:rise 3.5s linear infinite;">🎊</div>
+        <div class="item" style="left:75vw; animation:rise 4.5s linear infinite;">🎊</div>
         
-        function createHearts(){{
-          for(let i=0;i<40;i++){{
-            let el=document.createElement("div");
-            el.innerHTML="💖";
-            el.className="party";
-            el.style.left=Math.random()*100+"vw";
-            el.style.top="-10vh";
-            el.style.animation="fallDown " + randomBetween(4,7) + "s linear forwards";
-            el.style.animationDelay=randomBetween(0,3)+"s";
-            document.body.appendChild(el);
-            setTimeout(()=>el.remove(),8000);
-          }}
-        }}
-        
-        function createConfetti(){{
-          for(let i=0;i<40;i++){{
-            let el=document.createElement("div");
-            el.innerHTML="🎊";
-            el.className="party";
-            el.style.left=Math.random()*100+"vw";
-            el.style.top="100vh";
-            el.style.animation="floatUp " + randomBetween(3,6) + "s linear forwards";
-            el.style.animationDelay=randomBetween(0,2)+"s";
-            document.body.appendChild(el);
-            setTimeout(()=>el.remove(),7000);
-          }}
-        }}
-        
-        function createBirds(){{
-          for(let i=0;i<6;i++){{
-            let el=document.createElement("div");
-            el.innerHTML="🐦";
-            el.className="party";
-            el.style.top=Math.random()*80+"vh";
-            el.style.fontSize="36px";
-            el.style.animation="flyAcross " + randomBetween(5,8) + "s linear forwards";
-            el.style.animationDelay=randomBetween(0,2)+"s";
-            document.body.appendChild(el);
-            setTimeout(()=>el.remove(),9000);
-          }}
-        }}
-        
-        createHearts();
-        createConfetti();
-        createBirds();
-        
-        </script>
+        <!-- KUŞLAR -->
+        <div class="item" style="top:20vh; font-size:36px; animation:fly 8s linear infinite;">🐦</div>
+        <div class="item" style="top:50vh; font-size:36px; animation:fly 6s linear infinite;">🐦</div>
+        <div class="item" style="top:70vh; font-size:36px; animation:fly 7s linear infinite;">🐦</div>
         
         <audio autoplay>
         <source src="data:audio/mp3;base64,{budgie_sound}" type="audio/mp3">
