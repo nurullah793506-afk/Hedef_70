@@ -188,6 +188,7 @@ if mode == "Günlük Test":
     today_questions = st.session_state.today_questions
     q_index = st.session_state.q_index
 
+# 🔒 OTURUM BİTTİ Mİ KONTROLÜ
     if q_index >= len(today_questions):
 
         if not st.session_state.finished:
@@ -269,13 +270,14 @@ if mode == "Günlük Test":
         <source src="data:audio/mp3;base64,{budgie_sound}" type="audio/mp3">
         </audio>
         
-        """, height=0)
+        """, height=600)
         
         st.success("🎉 Oturum tamamlandı!")
-
+        st.stop()
 
 
     q = today_questions[q_index]
+
     if "show_message" in st.session_state:
         if st.session_state.show_message:
             st.success(f"🎉 {st.session_state.show_message}")
