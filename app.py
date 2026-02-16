@@ -22,7 +22,6 @@ ASKED_FILE = BASE_DIR / "asked_questions.json"
 WEEKLY_FILE = BASE_DIR / "weekly_scores.json"
 WRONG_FILE = BASE_DIR / "wrong_questions.json"
 
-# 🔥 YENİ EKLENEN DOSYALAR
 MESSAGES_FILE = BASE_DIR / "messages.json"
 USED_MESSAGES_FILE = BASE_DIR / "used_messages.json"
 
@@ -64,12 +63,10 @@ def save_json(path, data):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-# 🔥 MESAJ SİSTEMİ
 def get_random_message():
     messages = load_json(MESSAGES_FILE, [])
     used = load_json(USED_MESSAGES_FILE, [])
 
-    # Eğer mesaj kalmadıysa reset
     if len(messages) == 0:
         messages = used
         used = []
@@ -80,7 +77,6 @@ def get_random_message():
         return None
 
     selected = random.choice(messages)
-
     messages.remove(selected)
     used.append(selected)
 
@@ -112,7 +108,6 @@ else:
     st.stop()
 
 session_key = f"{today}_{session_type}"
-
 mode = st.sidebar.radio("Mod Seç", ["Günlük Test", "Yanlışlarım"])
 
 st.sidebar.markdown("### 📊 Haftalık Performans")
@@ -125,26 +120,6 @@ for i in range(6, -1, -1):
 st.sidebar.line_chart(scores)
 st.sidebar.write(f"🏆 Haftalık Toplam: {sum(scores)}")
 st.sidebar.write(f"❌ Yanlış Havuzu: {len(wrong_questions)}")
-
-# ===================== YANLIŞLARIM MODU =====================
-if mode == "Yanlışlarım":
-
-    st.title("📂 Yanlış Sorularım")
-
-    if not wrong_questions:
-        st.success("Yanlış soru yok 👑")
-        st.stop()
-
-    wrong_ids = [w["id"] for w in wrong_questions]
-    wrong_list = [q for q in questions if q["id"] in wrong_ids]
-
-    for q in wrong_list:
-        st.subheader(f"Soru ID: {q['id']}")
-        st.write(q["soru"])
-        st.write("Doğru cevap:", q["dogru"])
-        st.markdown("---")
-
-    st.stop()
 
 # ===================== GÜNLÜK TEST =====================
 if mode == "Günlük Test":
@@ -160,18 +135,14 @@ if mode == "Günlük Test":
         wrong_dict = {w["id"]: w for w in wrong_questions}
 
         for q in questions:
-
             if q["id"] in asked_questions:
                 continue
 
             wrong_entry = wrong_dict.get(q["id"])
-
             if wrong_entry:
                 wrong_date = datetime.strptime(
                     wrong_entry["wrong_date"], "%Y-%m-%d"
                 ).date()
-
-                # minimum 2 gün şartı
                 if (now_dt.date() - wrong_date).days < 2:
                     continue
 
@@ -188,153 +159,64 @@ if mode == "Günlük Test":
     today_questions = st.session_state.today_questions
     q_index = st.session_state.q_index
 
-# 🔒 OTURUM BİTTİ Mİ KONTROLÜ
+    # 🔒 OTURUM BİTTİ Mİ
     if q_index >= len(today_questions):
 
         if not st.session_state.finished:
             weekly_scores[today] = weekly_scores.get(today, 0) + st.session_state.correct_count
             save_json(WEEKLY_FILE, weekly_scores)
             st.session_state.finished = True
-    
-        # 🎉 FULL PARTY EFFECT
+
+        # 🎉 FULL PARTY EFFECT (DÜZELTİLDİ)
         components.html(f"""
-        <style>
+        <script>
+        const root = window.parent.document.body;
+
+        const style = window.parent.document.createElement("style");
+        style.innerHTML = `
         @keyframes fallDown {{
           from {{ transform: translateY(-10vh); }}
           to {{ transform: translateY(110vh); }}
         }}
-        
         @keyframes floatUp {{
           from {{ transform: translateY(0); }}
           to {{ transform: translateY(-120vh); }}
         }}
-        
         @keyframes flyAcross {{
           from {{ transform: translateX(-10vw); }}
           to {{ transform: translateX(120vw); }}
+        }}`;
+        window.parent.document.head.appendChild(style);
+
+        function spawn(icon, animation, startTop) {{
+            for (let i = 0; i < 30; i++) {{
+                let el = window.parent.document.createElement("div");
+                el.innerHTML = icon;
+                el.style.position = "fixed";
+                el.style.left = Math.random()*100 + "vw";
+                el.style.top = startTop;
+                el.style.fontSize = "30px";
+                el.style.zIndex = "999999";
+                el.style.animation = animation + " 5s linear forwards";
+                root.appendChild(el);
+                setTimeout(()=>el.remove(),5000);
+            }}
         }}
-        
-        .party {{
-          position: fixed;
-          font-size: 30px;
-          z-index: 9999;
-        }}
-        
-        </style>
-        
-        <script>
-        function createHearts() {{
-          for(let i=0;i<30;i++) {{
-            let el = document.createElement("div");
-            el.innerHTML="💖";
-            el.className="party";
-            el.style.left=Math.random()*100+"vw";
-            el.style.top="-10vh";
-            el.style.animation="fallDown 5s linear forwards";
-            document.body.appendChild(el);
-            setTimeout(()=>el.remove(),5000);
-          }}
-        }}
-        
-        function createConfetti() {{
-          for(let i=0;i<30;i++) {{
-            let el = document.createElement("div");
-            el.innerHTML="🎊";
-            el.className="party";
-            el.style.left=Math.random()*100+"vw";
-            el.style.top="100vh";
-            el.style.animation="floatUp 4s linear forwards";
-            document.body.appendChild(el);
-            setTimeout(()=>el.remove(),4000);
-          }}
-        }}
-        
-        function createBirds() {{
-          for(let i=0;i<5;i++) {{
-            let el = document.createElement("div");
-            el.innerHTML="🐦";
-            el.className="party";
-            el.style.top=Math.random()*80+"vh";
-            el.style.animation="flyAcross 6s linear forwards";
-            document.body.appendChild(el);
-            setTimeout(()=>el.remove(),6000);
-          }}
-        }}
-        
-        createHearts();
-        createConfetti();
-        createBirds();
+
+        spawn("💖","fallDown","-10vh");
+        spawn("🎊","floatUp","100vh");
+        spawn("🐦","flyAcross","50vh");
         </script>
-        
+
         <audio autoplay>
         <source src="data:audio/mp3;base64,{budgie_sound}" type="audio/mp3">
         </audio>
-        
-        """, height=600)
-        
+        """, height=0)
+
         st.success("🎉 Oturum tamamlandı!")
         st.stop()
 
-
     q = today_questions[q_index]
 
-    if "show_message" in st.session_state:
-        if st.session_state.show_message:
-            st.success(f"🎉 {st.session_state.show_message}")
-        del st.session_state["show_message"]
-    
     st.subheader(f"Soru {q_index + 1}")
     st.write(q["soru"])
-
-    choice = st.radio("Seç:", q["secenekler"], key=f"{session_type}_{q_index}")
-
-    if st.button("Onayla"):
-
-        wrong_dict = {w["id"]: w for w in wrong_questions}
-        wrong_entry = wrong_dict.get(q["id"])
-
-        if choice == q["dogru"]:
-
-            asked_questions.append(q["id"])
-            save_json(ASKED_FILE, asked_questions)
-
-            if wrong_entry:
-                wrong_date = datetime.strptime(
-                    wrong_entry["wrong_date"], "%Y-%m-%d"
-                ).date()
-
-                if (now_dt.date() - wrong_date).days >= 2:
-                    if st.session_state.retry_first_attempt:
-                        wrong_questions[:] = [
-                            w for w in wrong_questions if w["id"] != q["id"]
-                        ]
-                        save_json(WRONG_FILE, wrong_questions)
-
-            # 🔥 Mesajı session_state'e koy
-            st.session_state.show_message = get_random_message()
-            
-            st.session_state.correct_count += 1
-            st.session_state.q_index += 1
-            st.session_state.retry_first_attempt = True
-            st.rerun()
-
-        else:
-
-            st.warning("Yanlış oldu, tekrar deneyelim.")
-            st.session_state.retry_first_attempt = False
-
-            if wrong_entry:
-                wrong_date = datetime.strptime(
-                    wrong_entry["wrong_date"], "%Y-%m-%d"
-                ).date()
-
-                if (now_dt.date() - wrong_date).days >= 2:
-                    wrong_entry["wrong_date"] = today
-                    save_json(WRONG_FILE, wrong_questions)
-
-            else:
-                wrong_questions.append({
-                    "id": q["id"],
-                    "wrong_date": today
-                })
-                save_json(WRONG_FILE, wrong_questions)
