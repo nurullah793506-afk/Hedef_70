@@ -226,11 +226,9 @@ if mode == "Günlük Test":
                         ]
                         save_json(WRONG_FILE, wrong_questions)
 
-            # 🔥 MESAJ BURADA
-            mesaj = get_random_message()
-            if mesaj:
-                st.success(f"🎉 {mesaj}")
-
+            # 🔥 Mesajı session_state'e koy
+            st.session_state.show_message = get_random_message()
+            
             st.session_state.correct_count += 1
             st.session_state.q_index += 1
             st.session_state.retry_first_attempt = True
