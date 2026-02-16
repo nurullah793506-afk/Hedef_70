@@ -137,6 +137,11 @@ if mode == "Günlük Test":
         st.session_state.session_id = session_key
         st.session_state.q_index = 0
         st.session_state.correct_count = 0
+
+        # 🔥 EKLENENLER
+        st.session_state.first_attempt_correct = 0
+        st.session_state.first_attempt_done = set()
+
         st.session_state.finished = False
 
         remaining = []
@@ -171,11 +176,13 @@ if mode == "Günlük Test":
     if q_index >= len(today_questions):
 
         if not st.session_state.finished:
-            weekly_scores[today] = weekly_scores.get(today, 0) + st.session_state.correct_count
+            # 🔥 weekly skor artık ilk deneme doğruya göre
+            weekly_scores[today] = weekly_scores.get(today, 0) + st.session_state.first_attempt_correct
             save_json(WEEKLY_FILE, weekly_scores)
             st.session_state.finished = True
 
-        if st.session_state.correct_count >= 4:
+        # 🔥 şölen artık ilk deneme doğruya göre
+        if st.session_state.first_attempt_correct >= 4:
             components.html(f"""
             <style>
             @keyframes fall {{0%{{transform:translateY(-10vh);}}100%{{transform:translateY(110vh);}}}}
@@ -215,13 +222,22 @@ if mode == "Günlük Test":
 
     if st.button("Cevapla", key=f"btn_{q_index}"):
 
+        # 🔥 ilk deneme mi?
+        is_first_try = q["id"] not in st.session_state.first_attempt_done
+
         if selected == q["dogru"]:
 
             st.session_state.correct_count += 1
+
+            # 🔥 ilk denemede doğruysa say
+            if is_first_try:
+                st.session_state.first_attempt_correct += 1
+
+            st.session_state.first_attempt_done.add(q["id"])
+
             asked_questions.append(q["id"])
             save_json(ASKED_FILE, asked_questions)
 
-            # mesaj göster
             msg = get_random_message()
             if msg:
                 st.session_state.show_message = msg
@@ -232,7 +248,9 @@ if mode == "Günlük Test":
         else:
             st.error("Yanlış ❌ Tekrar deneyin.")
 
-            # sadece ilk yanlışta kaydet
+            if is_first_try:
+                st.session_state.first_attempt_done.add(q["id"])
+
             if not any(w["id"] == q["id"] for w in wrong_questions):
                 wrong_questions.append({
                     "id": q["id"],
