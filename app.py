@@ -195,24 +195,84 @@ if mode == "Günlük Test":
             save_json(WEEKLY_FILE, weekly_scores)
             st.session_state.finished = True
     
-        # 🎉 KUTLAMA BLOĞU
-        st.balloons()
-    
-        if budgie_img:
-            st.image(f"data:image/png;base64,{budgie_img}", use_column_width=False)
-    
-        if budgie_sound:
-            components.html(
-                f"""
-                <audio autoplay>
-                <source src="data:audio/mp3;base64,{budgie_sound}" type="audio/mp3">
-                </audio>
-                """,
-                height=0,
-            )
-    
+        # 🎉 FULL PARTY EFFECT
+        components.html(f"""
+        <style>
+        @keyframes fallDown {{
+          from {{ transform: translateY(-10vh); }}
+          to {{ transform: translateY(110vh); }}
+        }}
+        
+        @keyframes floatUp {{
+          from {{ transform: translateY(0); }}
+          to {{ transform: translateY(-120vh); }}
+        }}
+        
+        @keyframes flyAcross {{
+          from {{ transform: translateX(-10vw); }}
+          to {{ transform: translateX(120vw); }}
+        }}
+        
+        .party {{
+          position: fixed;
+          font-size: 30px;
+          z-index: 9999;
+        }}
+        
+        </style>
+        
+        <script>
+        function createHearts() {{
+          for(let i=0;i<30;i++) {{
+            let el = document.createElement("div");
+            el.innerHTML="💖";
+            el.className="party";
+            el.style.left=Math.random()*100+"vw";
+            el.style.top="-10vh";
+            el.style.animation="fallDown 5s linear forwards";
+            document.body.appendChild(el);
+            setTimeout(()=>el.remove(),5000);
+          }}
+        }}
+        
+        function createConfetti() {{
+          for(let i=0;i<30;i++) {{
+            let el = document.createElement("div");
+            el.innerHTML="🎊";
+            el.className="party";
+            el.style.left=Math.random()*100+"vw";
+            el.style.top="100vh";
+            el.style.animation="floatUp 4s linear forwards";
+            document.body.appendChild(el);
+            setTimeout(()=>el.remove(),4000);
+          }}
+        }}
+        
+        function createBirds() {{
+          for(let i=0;i<5;i++) {{
+            let el = document.createElement("div");
+            el.innerHTML="🐦";
+            el.className="party";
+            el.style.top=Math.random()*80+"vh";
+            el.style.animation="flyAcross 6s linear forwards";
+            document.body.appendChild(el);
+            setTimeout(()=>el.remove(),6000);
+          }}
+        }}
+        
+        createHearts();
+        createConfetti();
+        createBirds();
+        </script>
+        
+        <audio autoplay>
+        <source src="data:audio/mp3;base64,{budgie_sound}" type="audio/mp3">
+        </audio>
+        
+        """, height=0)
+        
         st.success("🎉 Oturum tamamlandı!")
-        st.stop()
+
 
 
     q = today_questions[q_index]
