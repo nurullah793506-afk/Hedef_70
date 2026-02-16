@@ -168,92 +168,92 @@ if mode == "Günlük Test":
             st.session_state.finished = True
 
        # 🎉 FULL PARTY EFFECT
-components.html(f"""
-<style>
-
-@keyframes fallDown {{
-  0% {{ transform: translateY(-10vh); opacity:1; }}
-  100% {{ transform: translateY(110vh); opacity:0; }}
-}}
-
-@keyframes floatUp {{
-  0% {{ transform: translateY(0vh); opacity:1; }}
-  100% {{ transform: translateY(-120vh); opacity:0; }}
-}}
-
-@keyframes flyAcross {{
-  0% {{ transform: translateX(-15vw); }}
-  100% {{ transform: translateX(115vw); }}
-}}
-
-.party {{
-  position: fixed;
-  font-size: 28px;
-  pointer-events:none;
-  z-index:9999;
-}}
-
-</style>
-
-<script>
-
-function randomBetween(min,max){{
-  return Math.random()*(max-min)+min;
-}}
-
-function createHearts(){{
-  for(let i=0;i<40;i++){{
-    let el=document.createElement("div");
-    el.innerHTML="💖";
-    el.className="party";
-    el.style.left=Math.random()*100+"vw";
-    el.style.top="-10vh";
-    el.style.animation=`fallDown ${randomBetween(4,7)}s linear forwards`;
-    el.style.animationDelay=randomBetween(0,3)+"s";
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),8000);
-  }}
-}}
-
-function createConfetti(){{
-  for(let i=0;i<40;i++){{
-    let el=document.createElement("div");
-    el.innerHTML="🎊";
-    el.className="party";
-    el.style.left=Math.random()*100+"vw";
-    el.style.top="100vh";
-    el.style.animation=`floatUp ${randomBetween(3,6)}s linear forwards`;
-    el.style.animationDelay=randomBetween(0,2)+"s";
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),7000);
-  }}
-}}
-
-function createBirds(){{
-  for(let i=0;i<6;i++){{
-    let el=document.createElement("div");
-    el.innerHTML="🐦";
-    el.className="party";
-    el.style.top=Math.random()*80+"vh";
-    el.style.fontSize="36px";
-    el.style.animation=`flyAcross ${randomBetween(5,8)}s linear forwards`;
-    el.style.animationDelay=randomBetween(0,2)+"s";
-    document.body.appendChild(el);
-    setTimeout(()=>el.remove(),9000);
-  }}
-}}
-
-createHearts();
-createConfetti();
-createBirds();
-
-</script>
-
-<audio autoplay>
-<source src="data:audio/mp3;base64,{budgie_sound}" type="audio/mp3">
-</audio>
-
-""", height=800)
+        components.html(f"""
+        <style>
+        
+        @keyframes fallDown {{
+          0% {{ transform: translateY(-10vh); opacity:1; }}
+          100% {{ transform: translateY(110vh); opacity:0; }}
+        }}
+        
+        @keyframes floatUp {{
+          0% {{ transform: translateY(0vh); opacity:1; }}
+          100% {{ transform: translateY(-120vh); opacity:0; }}
+        }}
+        
+        @keyframes flyAcross {{
+          0% {{ transform: translateX(-15vw); }}
+          100% {{ transform: translateX(115vw); }}
+        }}
+        
+        .party {{
+          position: fixed;
+          font-size: 28px;
+          pointer-events:none;
+          z-index:9999;
+        }}
+        
+        </style>
+        
+        <script>
+        
+        function randomBetween(min,max){{
+          return Math.random()*(max-min)+min;
+        }}
+        
+        function createHearts(){{
+          for(let i=0;i<40;i++){{
+            let el=document.createElement("div");
+            el.innerHTML="💖";
+            el.className="party";
+            el.style.left=Math.random()*100+"vw";
+            el.style.top="-10vh";
+            el.style.animation=`fallDown ${randomBetween(4,7)}s linear forwards`;
+            el.style.animationDelay=randomBetween(0,3)+"s";
+            document.body.appendChild(el);
+            setTimeout(()=>el.remove(),8000);
+          }}
+        }}
+        
+        function createConfetti(){{
+          for(let i=0;i<40;i++){{
+            let el=document.createElement("div");
+            el.innerHTML="🎊";
+            el.className="party";
+            el.style.left=Math.random()*100+"vw";
+            el.style.top="100vh";
+            el.style.animation=`floatUp ${randomBetween(3,6)}s linear forwards`;
+            el.style.animationDelay=randomBetween(0,2)+"s";
+            document.body.appendChild(el);
+            setTimeout(()=>el.remove(),7000);
+          }}
+        }}
+        
+        function createBirds(){{
+          for(let i=0;i<6;i++){{
+            let el=document.createElement("div");
+            el.innerHTML="🐦";
+            el.className="party";
+            el.style.top=Math.random()*80+"vh";
+            el.style.fontSize="36px";
+            el.style.animation=`flyAcross ${randomBetween(5,8)}s linear forwards`;
+            el.style.animationDelay=randomBetween(0,2)+"s";
+            document.body.appendChild(el);
+            setTimeout(()=>el.remove(),9000);
+          }}
+        }}
+        
+        createHearts();
+        createConfetti();
+        createBirds();
+        
+        </script>
+        
+        <audio autoplay>
+        <source src="data:audio/mp3;base64,{budgie_sound}" type="audio/mp3">
+        </audio>
+        
+        """, height=800)
 
         st.success("🎉 Oturum tamamlandı!")
         st.stop()
