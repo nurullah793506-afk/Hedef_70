@@ -110,16 +110,25 @@ else:
 session_key = f"{today}_{session_type}"
 mode = st.sidebar.radio("Mod Seç", ["Günlük Test", "Yanlışlarım"])
 
-st.sidebar.markdown("### 📊 Haftalık Performans")
+# ===================== YANLIŞLARIM =====================
+if mode == "Yanlışlarım":
 
-scores = []
-for i in range(6, -1, -1):
-    day = (now_dt - timedelta(days=i)).strftime("%Y-%m-%d")
-    scores.append(weekly_scores.get(day, 0))
+    st.title("📂 Yanlış Sorularım")
 
-st.sidebar.line_chart(scores)
-st.sidebar.write(f"🏆 Haftalık Toplam: {sum(scores)}")
-st.sidebar.write(f"❌ Yanlış Havuzu: {len(wrong_questions)}")
+    if not wrong_questions:
+        st.success("Yanlış soru yok 👑")
+        st.stop()
+
+    for w in wrong_questions:
+        q = next((x for x in questions if x["id"] == w["id"]), None)
+        if q:
+            st.write("###", q["soru"])
+            for sec in q["secenekler"]:
+                st.write("-", sec)
+            st.write("✅ Doğru:", q["dogru"])
+            st.write("---")
+
+    st.stop()
 
 # ===================== GÜNLÜK TEST =====================
 if mode == "Günlük Test":
@@ -129,7 +138,6 @@ if mode == "Günlük Test":
         st.session_state.q_index = 0
         st.session_state.correct_count = 0
         st.session_state.finished = False
-        st.session_state.retry_first_attempt = True
 
         remaining = []
         wrong_dict = {w["id"]: w for w in wrong_questions}
@@ -159,7 +167,7 @@ if mode == "Günlük Test":
     today_questions = st.session_state.today_questions
     q_index = st.session_state.q_index
 
-    # 🔒 OTURUM BİTTİ Mİ
+    # OTURUM BİTTİ
     if q_index >= len(today_questions):
 
         if not st.session_state.finished:
@@ -167,70 +175,28 @@ if mode == "Günlük Test":
             save_json(WEEKLY_FILE, weekly_scores)
             st.session_state.finished = True
 
-       # 🎉 FULL PARTY EFFECT
-        components.html(f"""
-        <style>
-        
-        body {{
-          overflow: hidden;
-        }}
-        
-        @keyframes fall {{
-          0% {{ transform: translateY(-10vh); opacity:1; }}
-          100% {{ transform: translateY(110vh); opacity:0; }}
-        }}
-        
-        @keyframes rise {{
-          0% {{ transform: translateY(100vh); opacity:1; }}
-          100% {{ transform: translateY(-20vh); opacity:0; }}
-        }}
-        
-        @keyframes fly {{
-          0% {{ transform: translateX(-10vw); }}
-          100% {{ transform: translateX(110vw); }}
-        }}
-        
-        .item {{
-          position: fixed;
-          font-size: 28px;
-          z-index: 9999;
-          pointer-events:none;
-        }}
-        
-        </style>
-        
-        <!-- KALPLER -->
-        <div class="item" style="left:10vw; animation:fall 6s linear infinite;">💖</div>
-        <div class="item" style="left:25vw; animation:fall 5s linear infinite;">💖</div>
-        <div class="item" style="left:40vw; animation:fall 7s linear infinite;">💖</div>
-        <div class="item" style="left:60vw; animation:fall 6.5s linear infinite;">💖</div>
-        <div class="item" style="left:80vw; animation:fall 5.5s linear infinite;">💖</div>
-        
-        <!-- KONFETİ -->
-        <div class="item" style="left:15vw; animation:rise 4s linear infinite;">🎊</div>
-        <div class="item" style="left:35vw; animation:rise 5s linear infinite;">🎊</div>
-        <div class="item" style="left:55vw; animation:rise 3.5s linear infinite;">🎊</div>
-        <div class="item" style="left:75vw; animation:rise 4.5s linear infinite;">🎊</div>
-        
-        <!-- KUŞLAR -->
-        <img src="data:image/png;base64,{budgie_img}" 
-             class="item" 
-             style="top:20vh; width:80px; animation:fly 8s linear infinite;" />
-        
-        <img src="data:image/png;base64,{budgie_img}" 
-             class="item" 
-             style="top:50vh; width:90px; animation:fly 6s linear infinite;" />
-        
-        <img src="data:image/png;base64,{budgie_img}" 
-             class="item" 
-             style="top:70vh; width:85px; animation:fly 7s linear infinite;" />
+        if st.session_state.correct_count >= 4:
+            components.html(f"""
+            <style>
+            @keyframes fall {{0%{{transform:translateY(-10vh);}}100%{{transform:translateY(110vh);}}}}
+            @keyframes rise {{0%{{transform:translateY(100vh);}}100%{{transform:translateY(-20vh);}}}}
+            @keyframes fly {{0%{{transform:translateX(-10vw);}}100%{{transform:translateX(110vw);}}}}
+            .item {{position:fixed;font-size:28px;z-index:9999;pointer-events:none;}}
+            </style>
 
-        
-        <audio autoplay>
-        <source src="data:audio/mp3;base64,{budgie_sound}" type="audio/mp3">
-        </audio>
-        
-        """, height=800)
+            <div class="item" style="left:10vw;animation:fall 6s linear infinite;">💖</div>
+            <div class="item" style="left:30vw;animation:fall 5s linear infinite;">💖</div>
+            <div class="item" style="left:50vw;animation:rise 4s linear infinite;">🎊</div>
+            <div class="item" style="left:70vw;animation:rise 5s linear infinite;">🎊</div>
+
+            <img src="data:image/png;base64,{budgie_img}"
+                 class="item"
+                 style="top:30vh;width:80px;animation:fly 8s linear infinite;" />
+
+            <audio autoplay>
+            <source src="data:audio/mp3;base64,{budgie_sound}" type="audio/mp3">
+            </audio>
+            """, height=600)
 
         st.success("🎉 Oturum tamamlandı!")
         st.stop()
@@ -239,26 +205,37 @@ if mode == "Günlük Test":
 
     st.subheader(f"Soru {q_index + 1}")
     st.write(q["soru"])
+
+    if "show_message" in st.session_state:
+        st.success(f"🎉 {st.session_state.show_message}")
+        del st.session_state["show_message"]
+
     options = q["secenekler"]
+    selected = st.radio("Cevabınız:", options, key=f"radio_{q_index}")
 
-selected = st.radio("Cevabınız:", options, key=f"radio_{q_index}")
+    if st.button("Cevapla", key=f"btn_{q_index}"):
 
-if st.button("Cevapla", key=f"btn_{q_index}"):
+        if selected == q["dogru"]:
 
-    if selected == q["dogru"]:
-        st.success("Doğru 👑")
-        st.session_state.correct_count += 1
-        asked_questions.append(q["id"])
-        save_json(ASKED_FILE, asked_questions)
-        st.session_state.q_index += 1
-        st.rerun()
-    else:
-        st.error(f"Yanlış ❌ Doğru cevap: {q['dogru']}")
-        wrong_questions.append({
-            "id": q["id"],
-            "wrong_date": today
-        })
-        save_json(WRONG_FILE, wrong_questions)
-        st.session_state.q_index += 1
-        st.rerun()
+            st.session_state.correct_count += 1
+            asked_questions.append(q["id"])
+            save_json(ASKED_FILE, asked_questions)
 
+            # mesaj göster
+            msg = get_random_message()
+            if msg:
+                st.session_state.show_message = msg
+
+            st.session_state.q_index += 1
+            st.rerun()
+
+        else:
+            st.error("Yanlış ❌ Tekrar deneyin.")
+
+            # sadece ilk yanlışta kaydet
+            if not any(w["id"] == q["id"] for w in wrong_questions):
+                wrong_questions.append({
+                    "id": q["id"],
+                    "wrong_date": today
+                })
+                save_json(WRONG_FILE, wrong_questions)
