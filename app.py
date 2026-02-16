@@ -176,7 +176,9 @@ if mode == "Günlük Test":
 
     if st.button("Onayla"):
 
-        wrong_entry = next((w for w in wrong_questions if w["id"] == q["id"]), None)
+        wrong_dict = {w["id"]: w for w in wrong_questions}
+        wrong_entry = wrong_dict.get(q["id"])
+
 
         if choice == q["dogru"]:
 
