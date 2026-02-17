@@ -162,7 +162,7 @@ if mode == "Günlük Test":
                 save_json(WEEKLY_FILE, weekly_scores)
                 st.session_state.finished = True
         
-            if st.session_state.first_attempt_correct >= 4:
+        if st.session_state.first_attempt_correct >= 4:
         
                 components.html(f"""
                 <style>
