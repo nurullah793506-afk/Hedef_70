@@ -121,6 +121,7 @@ if mode == "Günlük Test":
         st.session_state.first_attempt_correct = 0
         st.session_state.first_attempt_done = set()
         st.session_state.finished = False
+        st.session_state.total_wrong_count = 0
 
         remaining = []
         wrong_dict = {w["id"]: w for w in wrong_questions}
@@ -206,6 +207,11 @@ if mode == "Günlük Test":
 
     options = q["secenekler"]
     selected = st.radio("Cevabınız:", options, key=f"radio_{q_index}")
+    
+    # 🔥 MESAJ GÖSTERİMİ EKLE BURAYA
+    if "show_message" in st.session_state:
+        st.success(st.session_state.show_message)
+        del st.session_state.show_message
 
 
     # ===================== CEVAP BLOĞU (DÜZELTİLDİ) =====================
@@ -243,6 +249,7 @@ if mode == "Günlük Test":
         else:
 
             st.error("Olmadı Aşkım ❌ Hadi tekrar deneyelim.")
+            st.session_state.total_wrong_count += 1   # 🔥 BURAYA
 
             if is_first_try:
                 st.session_state.first_attempt_done.add(q["id"])
@@ -309,7 +316,7 @@ total_solved = len(all_ids)
 st.sidebar.write("🧠 Toplam Çözülen Soru:", total_solved)
 
 st.sidebar.write("❌ Toplam Yanlış Soru:", len(wrong_questions))
-
+st.sidebar.write("🚨 Toplam Yapılan Yanlış:", st.session_state.get("total_wrong_count", 0))
 st.sidebar.markdown("### 📈 Son 7 Gün")
 
 sorted_days = sorted(weekly_scores.keys(), reverse=True)[:7]
