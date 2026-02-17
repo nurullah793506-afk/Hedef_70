@@ -186,8 +186,8 @@ if mode == "Günlük Test":
                 </audio>
                 """, height=600)
         
-            st.success("🎉 Hadi iyisin bu bölüm bitti!")
-            st.stop()
+        st.success("🎉 Hadi iyisin bu bölüm bitti!")
+        st.stop()
 
     q = today_questions[q_index]
 
