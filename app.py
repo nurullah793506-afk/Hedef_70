@@ -110,56 +110,39 @@ else:
 session_key = f"{today}_{session_type}"
 mode = st.sidebar.radio("Mod Seç", ["Günlük Test", "Yanlışlarım"])
 
-# ===================== YANLIŞLARIM =====================
-if mode == "Yanlışlarım":
-
-    st.title("📂 Yanlış Sorularım")
-
-    if not wrong_questions:
-        st.success("Yanlış soru yok 👑")
-        st.stop()
-
-    for w in wrong_questions:
-        q = next((x for x in questions if x["id"] == w["id"]), None)
-        if q:
-            st.write("###", q["soru"])
-            for sec in q["secenekler"]:
-                st.write("-", sec)
-            st.write("✅ Adamsın:", q["dogru"])
-            st.write("---")
-
-    st.stop()
-
 # ===================== GÜNLÜK TEST =====================
+
 if mode == "Günlük Test":
 
     if "session_id" not in st.session_state or st.session_state.session_id != session_key:
         st.session_state.session_id = session_key
         st.session_state.q_index = 0
         st.session_state.correct_count = 0
-
-        # 🔥 EKLENENLER
         st.session_state.first_attempt_correct = 0
         st.session_state.first_attempt_done = set()
-
         st.session_state.finished = False
 
         remaining = []
         wrong_dict = {w["id"]: w for w in wrong_questions}
 
         for q in questions:
-            if q["id"] in asked_questions:
-                continue
 
             wrong_entry = wrong_dict.get(q["id"])
+
             if wrong_entry:
                 wrong_date = datetime.strptime(
                     wrong_entry["wrong_date"], "%Y-%m-%d"
                 ).date()
-                if (now_dt.date() - wrong_date).days < 3:
-                    continue
 
-            remaining.append(q)
+                days_passed = (now_dt.date() - wrong_date).days
+
+                if days_passed >= 3:
+                    remaining.append(q)
+
+                continue
+
+            if q["id"] not in asked_questions:
+                remaining.append(q)
 
         if len(remaining) < GUNLUK_SORU_SAYISI:
             st.success("🎉 Tüm sorular tamamlandı!")
@@ -172,38 +155,12 @@ if mode == "Günlük Test":
     today_questions = st.session_state.today_questions
     q_index = st.session_state.q_index
 
-    # OTURUM BİTTİ
-
     if q_index >= len(today_questions):
-    
+
         if not st.session_state.finished:
             weekly_scores[today] = st.session_state.first_attempt_correct
             save_json(WEEKLY_FILE, weekly_scores)
             st.session_state.finished = True
-    
-        if st.session_state.first_attempt_correct >= 4:
-
-            components.html(f"""
-            <style>
-            @keyframes fall {{0%{{transform:translateY(-10vh);}}100%{{transform:translateY(110vh);}}}}
-            @keyframes rise {{0%{{transform:translateY(100vh);}}100%{{transform:translateY(-20vh);}}}}
-            @keyframes fly {{0%{{transform:translateX(-10vw);}}100%{{transform:translateX(110vw);}}}}
-            .item {{position:fixed;font-size:28px;z-index:9999;pointer-events:none;}}
-            </style>
-
-            <div class="item" style="left:10vw;animation:fall 6s linear infinite;">💖</div>
-            <div class="item" style="left:30vw;animation:fall 5s linear infinite;">💖</div>
-            <div class="item" style="left:50vw;animation:rise 4s linear infinite;">🎊</div>
-            <div class="item" style="left:70vw;animation:rise 5s linear infinite;">🎊</div>
-
-            <img src="data:image/png;base64,{budgie_img}"
-                 class="item"
-                 style="top:30vh;width:80px;animation:fly 8s linear infinite;" />
-
-            <audio autoplay>
-            <source src="data:audio/mp3;base64,{budgie_sound}" type="audio/mp3">
-            </audio>
-            """, height=600)
 
         st.success("🎉 Hadi iyisin bu bölüm bitti!")
         st.stop()
@@ -213,50 +170,60 @@ if mode == "Günlük Test":
     st.subheader(f"Soru {q_index + 1}")
     st.write(q["soru"])
 
-    if "show_message" in st.session_state:
-        st.success(f"🎉 {st.session_state.show_message}")
-        del st.session_state["show_message"]
-
     options = q["secenekler"]
     selected = st.radio("Cevabınız:", options, key=f"radio_{q_index}")
 
+    # ===================== CEVAP BLOĞU (DÜZELTİLDİ) =====================
+
     if st.button("Cevapla", key=f"btn_{q_index}"):
 
-        # 🔥 ilk deneme mi?
         is_first_try = q["id"] not in st.session_state.first_attempt_done
 
         if selected == q["dogru"]:
 
-            st.session_state.correct_count += 1
-
-            # 🔥 ilk denemede doğruysa say
             if is_first_try:
                 st.session_state.first_attempt_correct += 1
 
             st.session_state.first_attempt_done.add(q["id"])
 
-            asked_questions.append(q["id"])
-            save_json(ASKED_FILE, asked_questions)
+            # Wrong listede varsa sil
+            wrong_questions = [w for w in wrong_questions if w["id"] != q["id"]]
+            save_json(WRONG_FILE, wrong_questions)
+
+            # Kalıcı doğru listesine ekle
+            if q["id"] not in asked_questions:
+                asked_questions.append(q["id"])
+                save_json(ASKED_FILE, asked_questions)
 
             msg = get_random_message()
             if msg:
-                st.session_state.show_message = msg
+                st.success(f"🎉 {msg}")
 
             st.session_state.q_index += 1
             st.rerun()
 
         else:
-            st.error("OLmadı Aşkım ❌ Hadi tekrar deneyekim.")
+
+            st.error("Olmadı Aşkım ❌ Hadi tekrar deneyelim.")
 
             if is_first_try:
                 st.session_state.first_attempt_done.add(q["id"])
 
-            if not any(w["id"] == q["id"] for w in wrong_questions):
+            existing_wrong = next(
+                (w for w in wrong_questions if w["id"] == q["id"]), None
+            )
+
+            if existing_wrong:
+                existing_wrong["wrong_date"] = today
+            else:
                 wrong_questions.append({
                     "id": q["id"],
                     "wrong_date": today
                 })
-                save_json(WRONG_FILE, wrong_questions)
+
+            save_json(WRONG_FILE, wrong_questions)
+
+
 # ===================== İSTATİSTİK PANELİ =====================
 st.sidebar.markdown("---")
 st.sidebar.subheader("📊 İstatistikler")
