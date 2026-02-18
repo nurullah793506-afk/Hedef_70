@@ -1,8 +1,8 @@
 import streamlit as st
 import streamlit.components.v1 as components
+import sqlite3
 import json
 import random
-import os
 from datetime import datetime, time, timedelta
 import pytz
 import base64
@@ -12,25 +12,36 @@ from pathlib import Path
 
 # ===================== AYARLAR =====================
 TIMEZONE = pytz.timezone("Europe/Istanbul")
-MORNING_TIME = time(8, 00)
-EVENING_TIME = time(20,00)
+MORNING_TIME = time(8, 0)
+EVENING_TIME = time(20, 0)
 GUNLUK_SORU_SAYISI = 5
 
 BASE_DIR = Path(__file__).parent
 QUESTIONS_FILE = BASE_DIR / "questions.json"
-ASKED_FILE = BASE_DIR / "asked_questions.json"
-WEEKLY_FILE = BASE_DIR / "weekly_scores.json"
-WRONG_FILE = BASE_DIR / "wrong_questions.json"
-
-MESSAGES_FILE = BASE_DIR / "messages.json"
-USED_MESSAGES_FILE = BASE_DIR / "used_messages.json"
 
 st.set_page_config(page_title="Mini TUS", page_icon="👑")
 
-# ===================== BASE64 =====================
-def get_base64(path):
-    with open(path, "rb") as f:
-        return base64.b64encode(f.read()).decode()
+# ===================== DATABASE =====================
+DB_FILE = BASE_DIR / "tus.db"
+
+conn = sqlite3.connect(DB_FILE, check_same_thread=False)
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS progress (
+    question_id INTEGER PRIMARY KEY,
+    status TEXT,
+    next_review TEXT
+)
+""")
+
+conn.commit()
+
+# ===================== YARDIMCI =====================
+
+def load_questions():
+    with open(QUESTIONS_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 def get_base64_resized(path):
     img = Image.open(path)
@@ -40,72 +51,19 @@ def get_base64_resized(path):
     img.save(buffer, format="PNG")
     return base64.b64encode(buffer.getvalue()).decode()
 
-try:
-    budgie_img = get_base64_resized(BASE_DIR / "static" / "budgie.png")
-except:
-    budgie_img = ""
-
-try:
-    budgie_sound = get_base64(BASE_DIR / "static" / "budgie.mp3")
-except:
-    budgie_sound = ""
-
-# ===================== JSON =====================
-def load_json(path, default):
-    if not os.path.exists(path):
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(default, f, ensure_ascii=False, indent=2)
-        return default
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-def save_json(path, data):
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-def get_random_message():
-    messages = load_json(MESSAGES_FILE, [])
-    used = load_json(USED_MESSAGES_FILE, [])
-
-    if len(messages) == 0:
-        messages = used
-        used = []
-        save_json(MESSAGES_FILE, messages)
-        save_json(USED_MESSAGES_FILE, used)
-
-    if not messages:
-        return None
-
-    selected = random.choice(messages)
-    messages.remove(selected)
-    used.append(selected)
-
-    save_json(MESSAGES_FILE, messages)
-    save_json(USED_MESSAGES_FILE, used)
-
-    return selected
-
-
-questions = load_json(QUESTIONS_FILE, [])
-asked_questions = load_json(ASKED_FILE, [])
-weekly_scores = load_json(WEEKLY_FILE, {})
-wrong_questions = load_json(WRONG_FILE, [])
+questions = load_questions()
 
 now_dt = datetime.now(TIMEZONE)
 today = now_dt.strftime("%Y-%m-%d")
 now_time = now_dt.time()
 
 # ===================== OTURUM =====================
-if now_time >= MORNING_TIME or now_time < EVENING_TIME:
-    if now_time >= MORNING_TIME:
-        session_type = "morning"
-        st.title("🌅 Günaydın Güzelliğim - Hadi Uyanma Testlerimizi Çözelim")
-    else:
-        session_type = "evening"
-        st.title("🌙 İyi akşamlar Sevdiceğim - Dizimizin Yeni Bölümü Yayınlandı")
+if MORNING_TIME <= now_time < EVENING_TIME:
+    session_type = "morning"
+    st.title("🌅 Günaydın Güzelliğim")
 else:
-    st.info("Test saati henüz gelmedi")
-    st.stop()
+    session_type = "evening"
+    st.title("🌙 İyi Akşamlar Sevdiceğim")
 
 session_key = f"{today}_{session_type}"
 mode = st.sidebar.radio("Mod Seç", ["Günlük Test", "Yanlışlarım"])
@@ -117,33 +75,32 @@ if mode == "Günlük Test":
     if "session_id" not in st.session_state or st.session_state.session_id != session_key:
         st.session_state.session_id = session_key
         st.session_state.q_index = 0
-        st.session_state.correct_count = 0
         st.session_state.first_attempt_correct = 0
         st.session_state.first_attempt_done = set()
         st.session_state.finished = False
-        st.session_state.total_wrong_count = 0
 
         remaining = []
-        wrong_dict = {w["id"]: w for w in wrong_questions}
 
         for q in questions:
+            cursor.execute(
+                "SELECT status, next_review FROM progress WHERE question_id=?",
+                (q["id"],)
+            )
+            row = cursor.fetchone()
 
-            wrong_entry = wrong_dict.get(q["id"])
-
-            if wrong_entry:
-                wrong_date = datetime.strptime(
-                    wrong_entry["wrong_date"], "%Y-%m-%d"
-                ).date()
-
-                days_passed = (now_dt.date() - wrong_date).days
-
-                if days_passed >= 3:
-                    remaining.append(q)
-
+            if row is None:
+                remaining.append(q)
                 continue
 
-            if q["id"] not in asked_questions:
-                remaining.append(q)
+            status, next_review = row
+
+            if status == "correct":
+                continue
+
+            if status == "wrong":
+                review_date = datetime.strptime(next_review, "%Y-%m-%d").date()
+                if now_dt.date() >= review_date:
+                    remaining.append(q)
 
         if len(remaining) < GUNLUK_SORU_SAYISI:
             st.success("🎉 Tüm sorular tamamlandı!")
@@ -157,46 +114,6 @@ if mode == "Günlük Test":
     q_index = st.session_state.q_index
 
     if q_index >= len(today_questions):
-
-        if not st.session_state.finished:
-                weekly_scores[today] = st.session_state.first_attempt_correct
-                save_json(WEEKLY_FILE, weekly_scores)
-                st.session_state.finished = True
-        
-        if st.session_state.first_attempt_correct >= 4:
-        
-                components.html(f"""
-                <style>
-                @keyframes fall {{0%{{transform:translateY(-10vh);}}100%{{transform:translateY(110vh);}}}}
-                @keyframes rise {{0%{{transform:translateY(100vh);}}100%{{transform:translateY(-20vh);}}}}
-                @keyframes fly {{0%{{transform:translateX(-10vw);}}100%{{transform:translateX(110vw);}}}}
-                .overlay {{
-                position:fixed;
-                top:0;
-                left:0;
-                width:100vw;
-                height:100vh;
-                pointer-events:none;
-                z-index:9999;
-                }}
-                .item {{position:fixed;font-size:28px;}}
-                </style>
-        
-                <div class="item" style="left:10vw;animation:fall 6s linear infinite;">💖</div>
-                <div class="item" style="left:30vw;animation:fall 5s linear infinite;">💖</div>
-                <div class="item" style="left:50vw;animation:rise 4s linear infinite;">🎊</div>
-                <div class="item" style="left:70vw;animation:rise 5s linear infinite;">🎊</div>
-        
-                <img src="data:image/png;base64,{budgie_img}"
-                     class="item"
-                     style="top:30vh;width:80px;animation:fly 8s linear infinite;" />
-        
-                <audio autoplay>
-                <source src="data:audio/mp3;base64,{budgie_sound}" type="audio/mp3">
-                </audio>
-                </div>
-                """, height=0)
-        
         st.success("🎉 Hadi iyisin bu bölüm bitti!")
         st.stop()
 
@@ -205,16 +122,11 @@ if mode == "Günlük Test":
     st.subheader(f"Soru {q_index + 1}")
     st.write(q["soru"])
 
-    options = q["secenekler"]
-    selected = st.radio("Cevabınız:", options, key=f"radio_{q_index}")
-    
-    # 🔥 MESAJ GÖSTERİMİ EKLE BURAYA
-    if "show_message" in st.session_state:
-        st.success(st.session_state.show_message)
-        del st.session_state.show_message
-
-
-    # ===================== CEVAP BLOĞU (DÜZELTİLDİ) =====================
+    selected = st.radio(
+        "Cevabınız:",
+        q["secenekler"],
+        key=f"radio_{q_index}"
+    )
 
     if st.button("Cevapla", key=f"btn_{q_index}"):
 
@@ -224,24 +136,14 @@ if mode == "Günlük Test":
 
             if is_first_try:
                 st.session_state.first_attempt_correct += 1
-                    # Sidebar anlık güncellensin
-                weekly_scores[today] = st.session_state.first_attempt_correct
-                save_json(WEEKLY_FILE, weekly_scores)
 
             st.session_state.first_attempt_done.add(q["id"])
 
-            # Wrong listede varsa sil
-            wrong_questions = [w for w in wrong_questions if w["id"] != q["id"]]
-            save_json(WRONG_FILE, wrong_questions)
-
-            # Kalıcı doğru listesine ekle
-            if q["id"] not in asked_questions:
-                asked_questions.append(q["id"])
-                save_json(ASKED_FILE, asked_questions)
-
-            msg = get_random_message()
-            if msg:
-                st.session_state.show_message = msg
+            cursor.execute("""
+                INSERT OR REPLACE INTO progress (question_id, status, next_review)
+                VALUES (?, 'correct', NULL)
+            """, (q["id"],))
+            conn.commit()
 
             st.session_state.q_index += 1
             st.rerun()
@@ -249,36 +151,30 @@ if mode == "Günlük Test":
         else:
 
             st.error("Olmadı Aşkım ❌ Hadi tekrar deneyelim.")
-            st.session_state.total_wrong_count += 1   # 🔥 BURAYA
 
             if is_first_try:
                 st.session_state.first_attempt_done.add(q["id"])
 
-            existing_wrong = next(
-                (w for w in wrong_questions if w["id"] == q["id"]), None
-            )
+            next_review_date = (now_dt + timedelta(days=2)).strftime("%Y-%m-%d")
 
-            if existing_wrong:
-                existing_wrong["wrong_date"] = today
-            else:
-                wrong_questions.append({
-                    "id": q["id"],
-                    "wrong_date": today
-                })
-
-            save_json(WRONG_FILE, wrong_questions)
+            cursor.execute("""
+                INSERT OR REPLACE INTO progress (question_id, status, next_review)
+                VALUES (?, 'wrong', ?)
+            """, (q["id"], next_review_date))
+            conn.commit()
 
 # ===================== YANLIŞLARIM =====================
 
 if mode == "Yanlışlarım":
 
-    wrong_questions = load_json(WRONG_FILE, [])
+    cursor.execute("SELECT question_id FROM progress WHERE status='wrong'")
+    rows = cursor.fetchall()
 
-    if not wrong_questions:
+    if not rows:
         st.info("Henüz yanlış yaptığın soru yok 🎉")
         st.stop()
 
-    wrong_ids = [w["id"] for w in wrong_questions]
+    wrong_ids = [r[0] for r in rows]
     wrong_list = [q for q in questions if q["id"] in wrong_ids]
 
     for q in wrong_list:
@@ -287,39 +183,18 @@ if mode == "Yanlışlarım":
         st.write("Doğru Cevap:", q["dogru"])
         st.markdown("---")
 
-    st.stop() 
+    st.stop()
 
+# ===================== İSTATİSTİK =====================
 
-
-# ===================== İSTATİSTİK PANELİ =====================
-wrong_questions = load_json(WRONG_FILE, [])
 st.sidebar.markdown("---")
-st.sidebar.subheader("📊 İstatistikler")
+st.sidebar.subheader("📊 İstatistik")
 
-today_score = weekly_scores.get(today, 0)
+cursor.execute("SELECT COUNT(*) FROM progress WHERE status='correct'")
+correct_total = cursor.fetchone()[0]
 
-st.sidebar.write("📅 Bugün İlk Deneme Doğru:", today_score)
+cursor.execute("SELECT COUNT(*) FROM progress WHERE status='wrong'")
+wrong_total = cursor.fetchone()[0]
 
-if GUNLUK_SORU_SAYISI > 0:
-    solved_today = st.session_state.q_index
-    if solved_today > 0:
-        success_rate = round((today_score / solved_today) * 100, 1)
-    else:
-        success_rate = 0
-else:
-    success_rate = 0
-
-st.sidebar.write("🎯 Başarı Oranı:", f"%{success_rate}")
-
-all_ids = set(asked_questions) | set(w["id"] for w in wrong_questions)
-total_solved = len(all_ids)
-st.sidebar.write("🧠 Toplam Çözülen Soru:", total_solved)
-
-st.sidebar.write("❌ Toplam Yanlış Soru:", len(wrong_questions))
-st.sidebar.write("🚨 Toplam Yapılan Yanlış:", st.session_state.get("total_wrong_count", 0))
-st.sidebar.markdown("### 📈 Son 7 Gün")
-
-sorted_days = sorted(weekly_scores.keys(), reverse=True)[:7]
-
-for day in sorted_days:
-    st.sidebar.write(f"{day} → {weekly_scores[day]} doğru")
+st.sidebar.write("✅ Toplam Doğru:", correct_total)
+st.sidebar.write("❌ Toplam Yanlış:", wrong_total)
