@@ -76,7 +76,12 @@ if "period" not in st.session_state or st.session_state.period != current_period
         remaining, GUNLUK_SORU_SAYISI
     )
 # ========================================================
-# ==================================================
+# ===================== MESAJ GÖSTER =====================
+if "show_message" in st.session_state and st.session_state.show_message:
+    st.success("💖 " + st.session_state.show_message)
+    st.balloons()
+    st.session_state.show_message = None
+# ========================================================
 
 # ===================== ROMANTİK MESAJ GÖSTER =====================
 
@@ -104,28 +109,23 @@ if st.button("Cevabı Onayla ✅"):
 
     if choice == q["dogru"]:
 
-        # Soruyu işaretle
         if q["id"] not in asked_questions:
             asked_questions.append(q["id"])
             save_json(ASKED_FILE, asked_questions)
 
-        # 1 kere kullanılmamış mesajları bul
         available_messages = [
             m for m in messages if m not in used_messages
         ]
 
         if available_messages:
             msg = random.choice(available_messages)
-
-            # Mesajı kullanılmışlara ekle
             used_messages.append(msg)
             save_json(USED_MESSAGES_FILE, used_messages)
 
-            # Mesaj + balon
-            st.success("💖 " + msg)
-            st.balloons()
+            # 👉 BURASI ÖNEMLİ
+            st.session_state.show_message = msg
         else:
-            st.warning("💌 Tüm mesajlar kullanıldı 💖")
+            st.session_state.show_message = "💌 Tüm mesajlar kullanıldı 💖"
 
         st.session_state.q_index += 1
         st.rerun()
