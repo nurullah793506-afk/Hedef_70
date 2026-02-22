@@ -79,10 +79,7 @@ if "period" not in st.session_state or st.session_state.period != current_period
 # ==================================================
 
 # ===================== ROMANTİK MESAJ GÖSTER =====================
-if st.session_state.get("show_message"):
-    st.success("💖 " + st.session_state.show_message)
-    st.balloons()
-    st.session_state.show_message = None
+
 # ===============================================================
 today_questions = st.session_state.today_questions
 q_index = st.session_state.q_index
@@ -104,22 +101,35 @@ choice = st.radio(
 )
 
 if st.button("Cevabı Onayla ✅"):
-    if choice == q["dogru"]:
-        # Soruyu işaretle
-        asked_questions.append(q["id"])
-        save_json(ASKED_FILE, asked_questions)
 
-        # Romantik mesaj (tekrar etmeyen)
-        available_messages = [m for m in messages if m not in used_messages]
+    if choice == q["dogru"]:
+
+        # Soruyu işaretle
+        if q["id"] not in asked_questions:
+            asked_questions.append(q["id"])
+            save_json(ASKED_FILE, asked_questions)
+
+        # 1 kere kullanılmamış mesajları bul
+        available_messages = [
+            m for m in messages if m not in used_messages
+        ]
 
         if available_messages:
             msg = random.choice(available_messages)
+
+            # Mesajı kullanılmışlara ekle
             used_messages.append(msg)
             save_json(USED_MESSAGES_FILE, used_messages)
-            st.session_state.show_message = msg
+
+            # Mesaj + balon
+            st.success("💖 " + msg)
+            st.balloons()
+        else:
+            st.warning("💌 Tüm mesajlar kullanıldı 💖")
 
         st.session_state.q_index += 1
         st.rerun()
+
     else:
         st.warning("❌ hadi bir daha deneyelim aşkım 💖💭")
 # ==================================================  
