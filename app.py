@@ -8,11 +8,11 @@ import pytz
 # ===================== AYARLAR =====================
 TIMEZONE = pytz.timezone("Europe/Istanbul")
 MORNING_TIME = time(00, 4)
-EVENING_TIME = time(00, 5)
+EVENING_TIME = time(16, 2)
 GUNLUK_SORU_SAYISI = 10
 
 st.set_page_config(page_title="Günün Seçilmiş Soruları", page_icon="🌸")
-st.title("🌸 Kork Bizden TUS...")
+st.title("🌸 Kadınlar Günü’n kutlu olsun sevgilim. Senin hem güçlü hem de bu kadar iyi kalpli biri olman beni her zaman etkiliyor. İnsanlara dokunan bir iş yapıyorsun ama farkında olmadan benim hayatıma da çok güzel dokundun. İyi ki varsın, iyi ki hayatımdasın. 🌸...")
 
 QUESTIONS_FILE = "questions.json"
 MESSAGES_FILE = "messages.json"
