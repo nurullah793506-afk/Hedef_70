@@ -7,7 +7,9 @@ import pytz
 
 # ===================== AYARLAR =====================
 TIMEZONE = pytz.timezone("Europe/Istanbul")
-GUNLUK_SORU_SAYISI = 10  # Her slotta (sabah/akşam) kaç yeni soru eklenecek
+MORNING_TIME = time(16, 4)
+EVENING_TIME = time(17, 54)
+GUNLUK_SORU_SAYISI = 10
 
 st.set_page_config(page_title="Günün Seçilmiş Soruları", page_icon="🌸")
 st.title("🌸 Her 2 Dünyamı Güzelleştiren Kadına 🌸")
