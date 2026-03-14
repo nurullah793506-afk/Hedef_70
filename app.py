@@ -4,6 +4,16 @@ import random
 import os
 from datetime import datetime
 import pytz
+from supabase import create_client
+
+# ===================== SUPABASE =====================
+
+SUPABASE_URL = st.secrets["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+USER_ID = "main_user"
 
 # ===================== AYARLAR =====================
 TIMEZONE = pytz.timezone("Europe/Istanbul")
@@ -33,19 +43,55 @@ def save_json(path, data):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
+# ===================== SUPABASE YARDIMCILAR =====================
+def get_progress():
+    result = supabase.table("app_progress").select("*").eq("user_id", USER_ID).execute()
+
+    if result.data:
+        return result.data[0]
+
+    default_progress = {
+        "user_id": USER_ID,
+        "global_index": 0,
+        "message_index": 0,
+        "last_period": "",
+        "period_counter": 0
+    }
+
+    supabase.table("app_progress").insert(default_progress).execute()
+    return default_progress
+
+def save_progress(progress):
+    supabase.table("app_progress").upsert({
+        "user_id": USER_ID,
+        "global_index": progress["global_index"],
+        "message_index": progress["message_index"],
+        "last_period": progress["last_period"],
+        "period_counter": progress["period_counter"]
+    }).execute()
+
+def get_wrong_ids():
+    result = supabase.table("wrong_questions").select("question_id").eq("user_id", USER_ID).execute()
+
+    if result.data:
+        return [item["question_id"] for item in result.data]
+    return []
+
+def add_wrong_question(question_id):
+    supabase.table("wrong_questions").upsert({
+        "user_id": USER_ID,
+        "question_id": question_id
+    }).execute()
+
 # ===================== VERİ YÜKLEME =====================
 questions = load_json(QUESTIONS_FILE, [])
 questions = sorted(questions, key=lambda x: x.get("id", 0))
 
 messages = load_json(MESSAGES_FILE, [])
-# Progress'e message_index (mesaj sırası) ekledik
-progress = load_json(PROGRESS_FILE, {
-    "global_index": 0, 
-    "message_index": 0, 
-    "last_period": "", 
-    "period_counter": 0
-})
-wrong_ids = load_json(WRONG_FILE, [])
+
+# Progress ve wrong list artık Supabase'ten geliyor
+progress = get_progress()
+wrong_ids = get_wrong_ids()
 
 # ===================== ZAMAN KONTROLÜ =====================
 now_dt = datetime.now(TIMEZONE)
@@ -71,7 +117,7 @@ period_id = f"{today_str}_{current_slot}"
 if progress["last_period"] != period_id:
     progress["last_period"] = period_id
     progress["period_counter"] = 0 
-    save_json(PROGRESS_FILE, progress)
+    save_progress(progress)
 
 # ===================== YANLIŞ SORULAR (SIDEBAR) =====================
 with st.sidebar:
@@ -118,26 +164,27 @@ else:
             msg_idx = progress.get("message_index", 0)
             
             # Eğer mesajlar listesi bittiyse başa dön (veya istersen sabit bir mesaj ver)
-            if msg_idx >= len(messages):
-                msg_idx = 0 # Mesajlar bittiyse 1. mesaja döner
-            
-            current_msg = messages[msg_idx]
+            if len(messages) > 0:
+                if msg_idx >= len(messages):
+                    msg_idx = 0
+                current_msg = messages[msg_idx]
+            else:
+                current_msg = ""
             
             # İLERLEME KAYDI
             progress["global_index"] += 1    
             progress["period_counter"] += 1 
             progress["message_index"] = msg_idx + 1 # Mesaj sırasını bir sonraki için artır
             
-            save_json(PROGRESS_FILE, progress)
+            save_progress(progress)
             
             st.success(f"DOĞRU! 🌟 \n\n 💌 Mesajın: {current_msg}")
-            
-            if st.button("Sonraki Soruya Geç ➡️"):
-                st.rerun()
+            st.rerun()
+
         else:
             st.error("❌ Yanlış cevap, tekrar dene bakalım 💖")
             
-            # Yanlışı dosyaya kalıcı olarak ekle
+            # Yanlışı Supabase'e kalıcı olarak ekle
             if q["id"] not in wrong_ids:
                 wrong_ids.append(q["id"])
-                save_json(WRONG_FILE, wrong_ids)
+                add_wrong_question(q["id"])
