@@ -22,7 +22,7 @@ TIMEZONE = pytz.timezone("Europe/Istanbul")
 GUNLUK_SORU_SAYISI = 10
 
 # BURAYA İSTEDİĞİN 2 SAATİ GİR
-TEST_SAATLERI = ["11:43", "20:00"]
+TEST_SAATLERI = ["15:05", "20:00"]
 
 st.set_page_config(page_title="Günün Seçilmiş Soruları", page_icon="🌸")
 st.title("🌸 Sonsuza kadar hastanım ben… İyi ki varsın doktorum ❤️🌸")
