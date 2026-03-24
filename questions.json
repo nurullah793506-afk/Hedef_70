@@ -1,303 +1,302 @@
 [
-
-  {
-    "id": 11,
-    "soru": "Cushing sendromunun en sık nedeni hangisidir?",
-    "secenekler": ["Adrenal tümör", "Pituiter adenom", "Ektopik ACTH", "Steroid kullanımı"],
-    "dogru": "Steroid kullanımı"
-  },
-  {
-    "id": 12,
-    "soru": "En sık görülen tiroid kanseri hangisidir?",
-    "secenekler": ["Papiller", "Medüller", "Anaplastik", "Foliküler"],
-    "dogru": "Papiller"
-  },
-  {
-    "id": 13,
-    "soru": "Down sendromunda en sık görülen kalp anomalisi hangisidir?",
-    "secenekler": ["VSD", "ASD", "AV kanal defekti", "TOF"],
-    "dogru": "AV kanal defekti"
-  },
-  {
-    "id": 14,
-    "soru": "Hipertansiyonun en sık sekonder nedeni hangisidir?",
-    "secenekler": ["Feokromositoma", "Renal arter stenozu", "Renal parankimal hastalık", "Primer hiperaldosteronizm"],
-    "dogru": "Renal parankimal hastalık"
-  },
-  {
-    "id": 15,
-    "soru": "Peptik ülser hastalığının en sık nedeni hangisidir?",
-    "secenekler": ["NSAİİ", "H. pylori", "Alkol", "Sigara"],
-    "dogru": "H. pylori"
-  },
-  {
-    "id": 16,
-    "soru": "Akut glomerülonefritin en sık nedeni hangisidir?",
-    "secenekler": ["Streptokok enfeksiyonu", "Stafilokok", "E. coli", "Klebsiella"],
-    "dogru": "Streptokok enfeksiyonu"
-  },
-  {
-    "id": 17,
-    "soru": "Sirozun dünya genelinde en sık viral nedeni hangisidir?",
-    "secenekler": ["Alkol", "Hepatit B", "Hepatit C", "NAFLD"],
-    "dogru": "Hepatit B"
-  },
-  {
-    "id": 18,
-    "soru": "En sık görülen çocukluk çağı malignitesi hangisidir?",
-    "secenekler": ["Lösemi", "Lenfoma", "Nöroblastom", "Wilms"],
-    "dogru": "Lösemi"
-  },
-  {
-    "id": 19,
-    "soru": "Akut miyokard infarktüsünde en erken yükselen belirteç hangisidir?",
-    "secenekler": ["CK-MB", "Troponin", "Myoglobin", "LDH"],
-    "dogru": "Myoglobin"
-  },
-  {
-    "id": 20,
-    "soru": "Troponin kaç saat sonra yükselir?",
-    "secenekler": ["1 saat", "3-4 saat", "12 saat", "24 saat"],
-    "dogru": "3-4 saat"
-  },
-  {
-    "id": 21,
-    "soru": "En sık görülen akciğer kanseri hangisidir?",
-    "secenekler": ["Skuamöz", "Adenokarsinom", "Küçük hücreli", "Büyük hücreli"],
-    "dogru": "Adenokarsinom"
-  },
-  {
-    "id": 22,
-    "soru": "Sigara ile en güçlü ilişkili akciğer kanseri hangisidir?",
-    "secenekler": ["Adenokarsinom", "Skuamöz", "Küçük hücreli", "Büyük hücreli"],
-    "dogru": "Küçük hücreli"
-  },
-  {
-    "id": 23,
-    "soru": "İlaçlara bağlı hiponatreminin en sık nedeni hangisidir?",
-    "secenekler": ["SSRI", "Tiazid diüretikler", "ACE inhibitörü", "Beta bloker"],
-    "dogru": "Tiazid diüretikler"
-  },
-  {
-    "id": 24,
-    "soru": "SIADH’de en sık görülen kanser hangisidir?",
-    "secenekler": ["Küçük hücreli akciğer kanseri", "Adenokarsinom", "Meme kanseri", "Kolon kanseri"],
-    "dogru": "Küçük hücreli akciğer kanseri"
-  },
-  {
-    "id": 25,
-    "soru": "En sık görülen konjenital enfeksiyon hangisidir?",
-    "secenekler": ["Toksoplazma", "CMV", "Rubella", "HSV"],
-    "dogru": "CMV"
-  },
-  {
-    "id": 26,
-    "soru": "Dünya genelinde en sık görülen kalp kapak hastalığı hangisidir?",
-    "secenekler": ["Mitral stenoz", "Mitral yetmezlik", "Aort stenozu", "Aort yetmezliği"],
-    "dogru": "Mitral yetmezlik"
-  },
-  {
-    "id": 27,
-    "soru": "Hiperparatiroidide en sık görülen neden hangisidir?",
-    "secenekler": ["Adenom", "Hiperplazi", "Karsinom", "Sekonder nedenler"],
-    "dogru": "Adenom"
-  },
-  {
-    "id": 28,
-    "soru": "En sık görülen benign karaciğer tümörü hangisidir?",
-    "secenekler": ["Hemanjiyom", "FNH", "Adenom", "Kist"],
-    "dogru": "Hemanjiyom"
-  },
-  {
-    "id": 29,
-    "soru": "En sık görülen malign karaciğer tümörü hangisidir?",
-    "secenekler": ["Hepatoselüler karsinom", "Kolanjiyokarsinom", "Metastaz", "Hepatoblastom"],
-    "dogru": "Metastaz"
-  },
-  {
-    "id": 30,
-    "soru": "En sık görülen pankreas kanseri hangisidir?",
-    "secenekler": ["Adenokarsinom", "İnsülinoma", "Glukagonoma", "VIPoma"],
-    "dogru": "Adenokarsinom"
-  },
-  {
-    "id": 31,
-    "soru": "En sık görülen inflamatuar bağırsak hastalığı hangisidir?",
-    "secenekler": ["Crohn", "Ülseratif kolit", "İrritabl bağırsak", "Çölyak"],
-    "dogru": "Ülseratif kolit"
-  },
-  {
-    "id": 32,
-    "soru": "Çölyakta en sık tutulan ince bağırsak bölgesi hangisidir?",
-    "secenekler": ["Duodenum", "Jejunum", "İleum", "Kolon"],
-    "dogru": "Duodenum"
-  },
-  {
-    "id": 33,
-    "soru": "En sık görülen primer immün yetmezlik hangisidir?",
-    "secenekler": ["SCID", "IgA eksikliği", "Bruton", "DiGeorge"],
-    "dogru": "IgA eksikliği"
-  },
-  {
-    "id": 34,
-    "soru": "En sık görülen kalıtsal trombofili hangisidir?",
-    "secenekler": ["Protein C eksikliği", "Protein S eksikliği", "Faktör V Leiden", "Antitrombin eksikliği"],
-    "dogru": "Faktör V Leiden"
-  },
-  {
-    "id": 35,
-    "soru": "En sık görülen anemi tipi hangisidir?",
-    "secenekler": ["Demir eksikliği", "Megaloblastik", "Aplastik", "Hemolitik"],
-    "dogru": "Demir eksikliği"
-  },
-  {
-    "id": 36,
-    "soru": "En sık görülen malign jinekolojik tümör hangisidir?",
-    "secenekler": ["Serviks", "Over", "Endometrium", "Vajina"],
-    "dogru": "Endometrium"
-  },
-  {
-    "id": 37,
-    "soru": "En sık görülen malign over tümörü hangisidir?",
-    "secenekler": ["Seröz karsinom", "Müsinöz", "Disgerminom", "Endometrioid"],
-    "dogru": "Seröz karsinom"
-  },
-  {
-    "id": 38,
-    "soru": "En sık görülen benign meme tümörü hangisidir?",
-    "secenekler": ["Fibroadenom", "Lipom", "Kist", "Papillom"],
-    "dogru": "Fibroadenom"
-  },
-  {
-    "id": 39,
-    "soru": "En sık görülen malign meme tümörü hangisidir?",
-    "secenekler": ["Duktal karsinom", "Lobüler", "Medüller", "Tubuler"],
-    "dogru": "Duktal karsinom"
-  },
-  {
-    "id": 40,
-    "soru": "En sık görülen kemik tümörü hangisidir?",
-    "secenekler": ["Osteosarkom", "Kondrosarkom", "Metastaz", "Ewing"],
-    "dogru": "Metastaz"
-  },
-  {
-    "id": 41,
-    "soru": "En sık görülen primer malign kemik tümörü hangisidir?",
-    "secenekler": ["Osteosarkom", "Kondrosarkom", "Ewing", "Fibrosarkom"],
-    "dogru": "Osteosarkom"
-  },
-  {
-    "id": 42,
-    "soru": "Çocukluk çağında en sık görülen primer malign kemik tümörü hangisidir?",
-    "secenekler": ["Osteosarkom", "Ewing", "Kondrosarkom", "Fibrosarkom"],
-    "dogru": "Osteosarkom"
-  },
-  {
-    "id": 43,
-    "soru": "En sık görülen primer karaciğer kanseri hangisidir?",
-    "secenekler": ["Hepatoselüler karsinom", "Kolanjiyokarsinom", "Metastaz", "Hepatoblastom"],
-    "dogru": "Hepatoselüler karsinom"
-  },
-  {
-    "id": 44,
-    "soru": "En sık görülen benign özofagus tümörü hangisidir?",
-    "secenekler": ["Leiomyom", "Lipom", "Fibrom", "Adenom"],
-    "dogru": "Leiomyom"
-  },
-  {
-    "id": 45,
-    "soru": "En sık görülen malign özofagus tümörü hangisidir?",
-    "secenekler": ["Skuamöz hücreli", "Adenokarsinom", "Karsinoid", "Lenfoma"],
-    "dogru": "Skuamöz hücreli"
-  },
-  {
-    "id": 46,
-    "soru": "En sık görülen gastrik kanser tipi hangisidir?",
-    "secenekler": ["Adenokarsinom", "Lenfoma", "GIST", "Karsinoid"],
-    "dogru": "Adenokarsinom"
-  },
-  {
-    "id": 47,
-    "soru": "En sık görülen çocukluk çağı böbrek tümörü hangisidir?",
-    "secenekler": ["Wilms", "Nöroblastom", "Rabdomiyosarkom", "Teratom"],
-    "dogru": "Wilms"
-  },
-  {
-    "id": 48,
-    "soru": "En sık görülen retroperitoneal çocukluk çağı tümörü hangisidir?",
-    "secenekler": ["Wilms", "Nöroblastom", "Hepatoblastom", "Rabdomiyosarkom"],
-    "dogru": "Nöroblastom"
-  },
-  {
-    "id": 49,
-    "soru": "En sık görülen Hodgkin lenfoma tipi hangisidir?",
-    "secenekler": ["Nodüler sklerozan", "Lenfosit baskın", "Lenfosit fakir", "Miks sellüler"],
-    "dogru": "Nodüler sklerozan"
-  },
-  {
-    "id": 50,
-    "soru": "En sık görülen non-Hodgkin lenfoma tipi hangisidir?",
-    "secenekler": ["Diffuse large B cell", "Foliküler", "Mantle cell", "Burkitt"],
-    "dogru": "Diffuse large B cell"
-  },
-  {
-    "id": 51,
-    "soru": "Ani başlayan şiddetli baş ağrısı ve ense sertliği olan hastada BT normal bulunuyor. Tanıyı doğrulamak için bir sonraki adım nedir?",
-    "secenekler": ["MR çekmek", "LP yapmak", "EEG çekmek", "BT anjiyografi"],
-    "dogru": "LP yapmak"
-  },
-  {
-    "id": 52,
-    "soru": "Hiperkalsemisi olan bir hastada PTH yüksek bulunuyor. En olası tanı nedir?",
-    "secenekler": ["Malignite", "Primer hiperparatiroidi", "D vitamini intoksikasyonu", "Sarkoidoz"],
-    "dogru": "Primer hiperparatiroidi"
-  },
-  {
-    "id": 53,
-    "soru": "Ewing sarkomunda radyolojik olarak görülen tipik periost reaksiyonu hangisidir?",
-    "secenekler": ["Güneş ışını", "Soğan zarı görünümü", "Sabun köpüğü", "Zımba deliği"],
-    "dogru": "Soğan zarı görünümü"
-  },
-  {
-    "id": 54,
-    "soru": "Akut romatizmal ateşte en sık görülen majör kriter hangisidir?",
-    "secenekler": ["Artralji", "Kardit", "Ateş", "ESR artışı"],
-    "dogru": "Kardit"
-  },
-  {
-    "id": 55,
-    "soru": "Akut pankreatitte en sık neden nedir?",
-    "secenekler": ["Alkol", "Safra taşı", "Hiperkalsemi", "Hipertrigliseridemi"],
-    "dogru": "Safra taşı"
-  },
-  {
-    "id": 56,
-    "soru": "En sık görülen primer beyin tümörü hangisidir?",
-    "secenekler": ["Glioblastoma multiforme", "Meningiom", "Astrositom", "Medulloblastom"],
-    "dogru": "Meningiom"
-  },
-  {
-    "id": 57,
-    "soru": "En sık görülen malign primer beyin tümörü hangisidir?",
-    "secenekler": ["Meningiom", "Glioblastoma multiforme", "Medulloblastom", "Oligodendrogliom"],
-    "dogru": "Glioblastoma multiforme"
-  },
-  {
-    "id": 58,
-    "soru": "İnfantlarda en sık görülen kalp hastalığı hangisidir?",
-    "secenekler": ["ASD", "VSD", "TOF", "PDA"],
-    "dogru": "VSD"
-  },
-  {
-    "id": 59,
-    "soru": "Yenidoğanda fizyolojik sarılık en erken ne zaman başlar?",
-    "secenekler": ["İlk 24 saat", "24 saatten sonra", "Doğumda", "1. haftada"],
-    "dogru": "24 saatten sonra"
-  },
-  {
-    "id": 60,
-    "soru": "Akut bakteriyel menenjitte BOS’ta en tipik bulgu hangisidir?",
-    "secenekler": ["Lenfosit artışı", "Protein düşüklüğü", "Glukoz düşüklüğü", "Basınç düşüklüğü"],
-    "dogru": "Glukoz düşüklüğü"
-  }
+{
+"id": 1,
+"soru": "Hiperkalemide aşağıdakilerden hangisi serum potasyumunu düşürmez ancak kalp membranını stabilize eder?",
+"secenekler": ["Kalsiyum glukonat", "İnsülin", "Beta agonist", "Furosemid"],
+"dogru": "Kalsiyum glukonat"
+},
+{
+"id": 2,
+"soru": "SIADH'de aşağıdaki bulgulardan hangisi görülmez?",
+"secenekler": ["Hiponatremi", "Düşük serum osmolalitesi", "Yüksek idrar osmolalitesi", "Düşük idrar osmolalitesi"],
+"dogru": "Düşük idrar osmolalitesi"
+},
+{
+"id": 3,
+"soru": "Akut pankreatitte lipaz ile ilgili doğru ifade hangisidir?",
+"secenekler": ["Amilaza göre daha spesifiktir", "Amilazdan daha erken yükselir", "Hiç yükselmez", "Sadece kronikte artar"],
+"dogru": "Amilaza göre daha spesifiktir"
+},
+{
+"id": 4,
+"soru": "Troponin ile ilgili en doğru ifade hangisidir?",
+"secenekler": ["En özgül belirteçtir", "En erken yükselir", "Hızla normale döner", "Sadece kas hastalıklarında artar"],
+"dogru": "En özgül belirteçtir"
+},
+{
+"id": 5,
+"soru": "Nefrotik sendromda aşağıdakilerden hangisi beklenmez?",
+"secenekler": ["Masif proteinüri", "Hipoalbuminemi", "Hiperkolesterolemi", "Ağır hematuri"],
+"dogru": "Ağır hematuri"
+},
+{
+"id": 6,
+"soru": "Prerenal akut böbrek hasarında hangi bulgu beklenir?",
+"secenekler": ["FeNa düşük", "FeNa yüksek", "Proteinüri belirgin", "Silendir yokluğu"],
+"dogru": "FeNa düşük"
+},
+{
+"id": 7,
+"soru": "Crohn hastalığında aşağıdakilerden hangisi doğrudur?",
+"secenekler": ["Transmural tutulum vardır", "Sadece kolon tutulur", "Rektum her zaman tutulur", "Sürekli lezyon vardır"],
+"dogru": "Transmural tutulum vardır"
+},
+{
+"id": 8,
+"soru": "Ülseratif kolitte aşağıdakilerden hangisi doğrudur?",
+"secenekler": ["Sürekli lezyon vardır", "Skip lezyon vardır", "Transmural tutulum vardır", "Granülom tipiktir"],
+"dogru": "Sürekli lezyon vardır"
+},
+{
+"id": 9,
+"soru": "Hipotiroidide aşağıdakilerden hangisi beklenmez?",
+"secenekler": ["Bradikardi", "Kilo alımı", "Soğuk intoleransı", "Taşikardi"],
+"dogru": "Taşikardi"
+},
+{
+"id": 10,
+"soru": "Hipertiroidide aşağıdakilerden hangisi beklenmez?",
+"secenekler": ["Kilo kaybı", "Taşikardi", "Sıcak intoleransı", "Bradikardi"],
+"dogru": "Bradikardi"
+},
+{
+"id": 11,
+"soru": "ACE inhibitörlerinin en karakteristik yan etkisi hangisidir?",
+"secenekler": ["Kuru öksürük", "Hipoglisemi", "Hipokalemi", "Bradikardi"],
+"dogru": "Kuru öksürük"
+},
+{
+"id": 12,
+"soru": "Beta blokerlerin kontrendike olduğu durum hangisidir?",
+"secenekler": ["Astım", "Hipertansiyon", "MI", "Aritmi"],
+"dogru": "Astım"
+},
+{
+"id": 13,
+"soru": "Warfarin etkisini artıran durum hangisidir?",
+"secenekler": ["Antibiyotik kullanımı", "Vitamin K alımı", "Proteinli diyet", "Egzersiz"],
+"dogru": "Antibiyotik kullanımı"
+},
+{
+"id": 14,
+"soru": "Heparin kullanımına bağlı gelişen trombositopeni hangi mekanizmayla olur?",
+"secenekler": ["İmmün aracılı", "Kemik iliği baskılanması", "Tüketim", "Dolaşım bozukluğu"],
+"dogru": "İmmün aracılı"
+},
+{
+"id": 15,
+"soru": "Bakteriyel menenjitte BOS bulgusu hangisidir?",
+"secenekler": ["Nötrofil artışı", "Lenfosit artışı", "Normal protein", "Yüksek glukoz"],
+"dogru": "Nötrofil artışı"
+},
+{
+"id": 16,
+"soru": "Viral menenjitte BOS bulgusu hangisidir?",
+"secenekler": ["Lenfosit artışı", "Nötrofil artışı", "Glukoz düşüklüğü", "Yüksek protein"],
+"dogru": "Lenfosit artışı"
+},
+{
+"id": 17,
+"soru": "Hiperkalsemide aşağıdaki bulgulardan hangisi beklenmez?",
+"secenekler": ["Poliüri", "Kabızlık", "Mental değişiklik", "Tetani"],
+"dogru": "Tetani"
+},
+{
+"id": 18,
+"soru": "Hipokalsemide hangi bulgu beklenir?",
+"secenekler": ["Tetani", "Kabızlık", "Poliüri", "Letarji"],
+"dogru": "Tetani"
+},
+{
+"id": 19,
+"soru": "Anyon gap artışı olmayan metabolik asidoz nedeni hangisidir?",
+"secenekler": ["İshal", "DKA", "Laktik asidoz", "Üremi"],
+"dogru": "İshal"
+},
+{
+"id": 20,
+"soru": "Metabolik alkalozun en sık nedeni hangisidir?",
+"secenekler": ["Kusma", "DKA", "İshal", "Laktik asidoz"],
+"dogru": "Kusma"
+},
+{
+"id": 21,
+"soru": "Pulmoner embolide en sık bulgu hangisidir?",
+"secenekler": ["Dispne", "Bradikardi", "Hipotermi", "Hipoglisemi"],
+"dogru": "Dispne"
+},
+{
+"id": 22,
+"soru": "MI'da en özgül belirteç hangisidir?",
+"secenekler": ["Troponin", "CK-MB", "LDH", "Miyoglobin"],
+"dogru": "Troponin"
+},
+{
+"id": 23,
+"soru": "SLE için en spesifik antikor hangisidir?",
+"secenekler": ["Anti-dsDNA", "ANA", "RF", "Anti-CCP"],
+"dogru": "Anti-dsDNA"
+},
+{
+"id": 24,
+"soru": "RA için en spesifik antikor hangisidir?",
+"secenekler": ["Anti-CCP", "RF", "ANA", "Anti-dsDNA"],
+"dogru": "Anti-CCP"
+},
+{
+"id": 25,
+"soru": "Parkinson hastalığında hangi bulgu görülmez?",
+"secenekler": ["Spastisite", "Rijidite", "Bradikinezi", "Tremor"],
+"dogru": "Spastisite"
+},
+{
+"id": 26,
+"soru": "Alzheimer hastalığında erken dönemde hangi bulgu görülmez?",
+"secenekler": ["Motor paralizi", "Hafıza kaybı", "Konfüzyon", "Davranış değişikliği"],
+"dogru": "Motor paralizi"
+},
+{
+"id": 27,
+"soru": "Testis torsiyonunda en önemli özellik hangisidir?",
+"secenekler": ["Acil cerrahi gerektirir", "Ağrısızdır", "Yavaş gelişir", "Tedavi edilmez"],
+"dogru": "Acil cerrahi gerektirir"
+},
+{
+"id": 28,
+"soru": "DVT için en önemli risk faktörü hangisidir?",
+"secenekler": ["İmmobilizasyon", "Egzersiz", "Vitamin kullanımı", "Diyet"],
+"dogru": "İmmobilizasyon"
+},
+{
+"id": 29,
+"soru": "KOAH'ta aşağıdakilerden hangisi doğrudur?",
+"secenekler": ["İrreversibl obstrüksiyon vardır", "Reversibl obstrüksiyon vardır", "Akut hastalıktır", "Sadece enfeksiyonla olur"],
+"dogru": "İrreversibl obstrüksiyon vardır"
+},
+{
+"id": 30,
+"soru": "Astımda aşağıdakilerden hangisi doğrudur?",
+"secenekler": ["Reversibl obstrüksiyon vardır", "İrreversibl obstrüksiyon vardır", "Sabit hastalıktır", "Tedavi edilmez"],
+"dogru": "Reversibl obstrüksiyon vardır"
+},
+{
+"id": 31,
+"soru": "Akciğer kanseri için en önemli risk faktörü hangisidir?",
+"secenekler": ["Sigara", "Diyet", "Vitamin", "Spor"],
+"dogru": "Sigara"
+},
+{
+"id": 32,
+"soru": "Pankreatitin en sık nedeni hangisidir?",
+"secenekler": ["Safra taşı", "Hipotiroidi", "Enfeksiyon", "Travma"],
+"dogru": "Safra taşı"
+},
+{
+"id": 33,
+"soru": "Hipoglisemide en sık görülen bulgu hangisidir?",
+"secenekler": ["Terleme", "Hipertansiyon", "Bradikardi", "Hipotermi"],
+"dogru": "Terleme"
+},
+{
+"id": 34,
+"soru": "Hiperglisemide en sık bulgu hangisidir?",
+"secenekler": ["Poliüri", "Bradikardi", "Hipotermi", "Hipoglisemi"],
+"dogru": "Poliüri"
+},
+{
+"id": 35,
+"soru": "Diyabet komplikasyonu olmayan hangisidir?",
+"secenekler": ["Hipertiroidi", "Nefropati", "Retinopati", "Nöropati"],
+"dogru": "Hipertiroidi"
+},
+{
+"id": 36,
+"soru": "Hiperkalemi nedeni olmayan hangisidir?",
+"secenekler": ["İnsülin fazlalığı", "Böbrek yetmezliği", "Asidoz", "ACE inhibitörü"],
+"dogru": "İnsülin fazlalığı"
+},
+{
+"id": 37,
+"soru": "Hipokalemi nedeni olmayan hangisidir?",
+"secenekler": ["ACE inhibitörü", "Diüretik", "Kusma", "İshal"],
+"dogru": "ACE inhibitörü"
+},
+{
+"id": 38,
+"soru": "SIADH nedeni olmayan hangisidir?",
+"secenekler": ["Diabetes insipidus", "Akciğer tümörü", "SSS hastalıkları", "İlaçlar"],
+"dogru": "Diabetes insipidus"
+},
+{
+"id": 39,
+"soru": "Addison hastalığında görülmeyen bulgu hangisidir?",
+"secenekler": ["Hipertansiyon", "Hipotansiyon", "Hiperpigmentasyon", "Hiponatremi"],
+"dogru": "Hipertansiyon"
+},
+{
+"id": 40,
+"soru": "Cushing sendromunda görülmeyen bulgu hangisidir?",
+"secenekler": ["Hipotansiyon", "Obezite", "Stria", "Hipertansiyon"],
+"dogru": "Hipotansiyon"
+},
+{
+"id": 41,
+"soru": "Tirotoksikozda görülmeyen bulgu hangisidir?",
+"secenekler": ["Bradikardi", "Taşikardi", "Tremor", "Kilo kaybı"],
+"dogru": "Bradikardi"
+},
+{
+"id": 42,
+"soru": "Demir eksikliği anemisinde görülmeyen bulgu hangisidir?",
+"secenekler": ["Makrositoz", "Mikrositoz", "Hipokromi", "Ferritin düşüklüğü"],
+"dogru": "Makrositoz"
+},
+{
+"id": 43,
+"soru": "Megaloblastik anemide görülmeyen bulgu hangisidir?",
+"secenekler": ["Mikrositoz", "Makrositoz", "Hipersegmente nötrofil", "B12 eksikliği"],
+"dogru": "Mikrositoz"
+},
+{
+"id": 44,
+"soru": "Akut inflamasyonda baskın hücre hangisidir?",
+"secenekler": ["Nötrofil", "Lenfosit", "Makrofaj", "Eozinofil"],
+"dogru": "Nötrofil"
+},
+{
+"id": 45,
+"soru": "Kronik inflamasyonda baskın hücre hangisidir?",
+"secenekler": ["Lenfosit", "Nötrofil", "Eritrosit", "Trombosit"],
+"dogru": "Lenfosit"
+},
+{
+"id": 46,
+"soru": "Granülom oluşumunda ana hücre hangisidir?",
+"secenekler": ["Makrofaj", "Nötrofil", "Lenfosit", "Eritrosit"],
+"dogru": "Makrofaj"
+},
+{
+"id": 47,
+"soru": "Apoptozda aşağıdakilerden hangisi görülmez?",
+"secenekler": ["İnflamasyon", "DNA parçalanması", "Kaspaz aktivasyonu", "Hücre küçülmesi"],
+"dogru": "İnflamasyon"
+},
+{
+"id": 48,
+"soru": "İskemik hasarda geri dönüşsüzlük kriteri hangisidir?",
+"secenekler": ["Membran hasarı", "ATP azalması", "Laktik asidoz", "Mitokondri şişmesi"],
+"dogru": "Membran hasarı"
+},
+{
+"id": 49,
+"soru": "Metaplazi neyi ifade eder?",
+"secenekler": ["Reversibl hücre değişimi", "İrreversibl hasar", "Kanser", "Nekroz"],
+"dogru": "Reversibl hücre değişimi"
+},
+{
+"id": 50,
+"soru": "Malign tümörlerin en önemli özelliği hangisidir?",
+"secenekler": ["Metastaz", "Yavaş büyüme", "Sınırlı kalma", "Diferansiasyon"],
+"dogru": "Metastaz"
+}
 ]
