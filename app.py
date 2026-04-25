@@ -25,7 +25,7 @@ GUNLUK_SORU_SAYISI = 10
 TEST_SAATLERI = ["08:00", "20:00"]
 
 st.set_page_config(page_title="Günün Seçilmiş Soruları", page_icon="🌸")
-st.title("Rakiplerin şu an çalışıyor. Sen ne yapıyorsun? 🏃‍♂️🔥Zor geliyor çünkü gelişiyorsun. 💪📈")
+st.title("Kendine gel... 💪Yorgun olabilirsin ama vazgeçmek için sebebin yok.🔥 İstediğin hayat konfor alanının dışında🏃‍♂️📈")
 
 QUESTIONS_FILE = "questions.json"
 MESSAGES_FILE = "messages.json"
